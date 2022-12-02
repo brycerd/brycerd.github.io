@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>设计模式 on Bryce&#39;s Log</title>
+    <link>https://brycerd.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+    <description>Recent content in 设计模式 on Bryce&#39;s Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 01 Oct 2022 08:00:00 +0800</lastBuildDate><atom:link href="https://brycerd.github.io/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>设计模式</title>
+      <link>https://brycerd.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Sat, 01 Oct 2022 08:00:00 +0800</pubDate>
+      
+      <guid>https://brycerd.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>&lt;p&gt;写出可扩展、可读、可维护的高质量代码是对程序员的最高要求。本文介绍了软件开发中的经典设计原则和设计模式。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

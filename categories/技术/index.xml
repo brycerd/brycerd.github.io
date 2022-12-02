@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>技术 on Bryce&#39;s Log</title>
+    <link>https://brycerd.github.io/categories/%E6%8A%80%E6%9C%AF/</link>
+    <description>Recent content in 技术 on Bryce&#39;s Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Thu, 01 Dec 2022 15:00:00 +0800</lastBuildDate><atom:link href="https://brycerd.github.io/categories/%E6%8A%80%E6%9C%AF/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Git：原理、使用与实践</title>
+      <link>https://brycerd.github.io/posts/git%E5%8E%9F%E7%90%86%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%AE%9E%E8%B7%B5/</link>
+      <pubDate>Thu, 01 Dec 2022 15:00:00 +0800</pubDate>
+      
+      <guid>https://brycerd.github.io/posts/git%E5%8E%9F%E7%90%86%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%AE%9E%E8%B7%B5/</guid>
+      <description>&lt;p&gt;本文从Git的底层出发，深入探索Git的底层数据对象、数据存储优化、数据远程传输和历史记录维护，以此理解Git的版本控制机制，在探索原理的基础上总结Git的常用命令和最佳工作实践。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>程序架构设计基础</title>
+      <link>https://brycerd.github.io/posts/%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Sat, 01 Oct 2022 10:00:00 +0800</pubDate>
+      
+      <guid>https://brycerd.github.io/posts/%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%9F%BA%E7%A1%80/</guid>
+      <description>&lt;p&gt;在计算机科学中，架构指软件系统的顶层结构，描述了系统内包含的子系统、模块、组件等个体，以及个体的分工、协作、运转机制。本文介绍了架构的概念、背景，详细阐述了架构设计的基本原则、设计流程和架构模式。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>设计模式</title>
+      <link>https://brycerd.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</link>
+      <pubDate>Sat, 01 Oct 2022 08:00:00 +0800</pubDate>
+      
+      <guid>https://brycerd.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</guid>
+      <description>&lt;p&gt;写出可扩展、可读、可维护的高质量代码是对程序员的最高要求。本文介绍了软件开发中的经典设计原则和设计模式。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

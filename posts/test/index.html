@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Hugo 0.104.3" />
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="Bryce" />
+  <meta property="og:url" content="https://brycerd.github.io/posts/test/" />
+  <link rel="canonical" href="https://brycerd.github.io/posts/test/" /><link rel="apple-touch-icon" href="/img/b3.ico" />
+  <link rel="icon" href="/img/b3.ico" />
+  <link rel="shortcut" href="/img/b3.ico" /><link rel="alternate" type="application/atom+xml" href="https://brycerd.github.io/index.xml" title="Bryce&#39;s Log">
+
+  <script type="application/ld+json">
+  {
+      "@context" : "http://schema.org",
+      "@type" : "BlogPosting",
+      "mainEntityOfPage": {
+           "@type": "WebPage",
+           "@id": "https:\/\/brycerd.github.io\/"
+      },
+      "articleSection" : "posts",
+      "name" : "排序算法",
+      "headline" : "排序算法",
+      "description" : "排序是将一组对象按照某种逻辑顺序重新排列的过程。在计算时代早期，据估计有30%的计算周期都用在排序上，排序在商业数据处理和现在科学计算中都有着很重要的地位，能够应用于事务处理、组合优化、天体物理学、分子动力学、语言学、基因组学、天气预报和很多其他领域，快速排序甚至被誉为20世纪科学和工程领域的十大算法之一。本文主要参考由Robert Sedgewick、Kevin Wayne所著、谢路云所译的Algorithms(第4版)，将讨论比较排序算法的理论基础、若干算法和优先队列。\n初级排序算法 选择排序 选择排序算法采用如下逻辑进行排序：首先，找到数组中最小的元素，然后将它和数组中的第一个元素交换位置；再次，在剩下的元素中找到最小的元素，将它和数组的第二个元素交换位置，如此往复，直到将整个数组排序，选择排序的C\u002b\u002b实现如下：\n1void selectSort(vector\u0026lt;int\u0026gt;\u0026amp; a) 2{ 3\tint N = a.size(); 4\tfor (int i = 0; i \u0026lt; N; \u002b\u002bi) 5\t{ 6\tint minPos = i; 7\tfor (int j = i \u002b 1; j \u0026lt; N; \u002b\u002bj) 8\tif (a[j] \u0026lt; a[minPos]) minPos = j; 9\tswap(a[i], a[minPos]); 10\t} 11\treturn; 12} 选择排序具有如下的特点：\n运行时间和输入分布无关\n无论输入初始是什么状态，是否有序是否反序，选择排序的运行时间并无区别。无论输入为何，选择排序总要运行$(N-1)\u002b(N-2)\u002b\u0026hellip;\u002b1=\\frac{N(N-1)}{2}\\sim\\frac{N^2}{2}$次比较操作和N次交换操作\n元素移动次数是最少的\n如前所述，选择排序共进行N次交换操作，而之后可以看到，其他算法的元素移动次数都是$NlogN\\space or\\space N^2$级别的\n根据算法分析可知，选择排序要进行$\\frac{N(N-1)}{2}$次的比较和N次的移动，总时间复杂度为$O(N^2)$，总空间复杂度为$\\Theta(1)$\n插入排序 插入排序基于如下逻辑进行：将每个元素插入到已经排序的子序列中的适当位置。同时，为了给要插入的元素腾出空间，需要将其余所有元素都在插入之前向右移动一位，插入排序的C\u002b\u002b实现如下所示：",
+      "inLanguage" : "en-US",
+      "author" : "Bryce",
+      "creator" : "Bryce",
+      "publisher": "Bryce",
+      "accountablePerson" : "Bryce",
+      "copyrightHolder" : "Bryce",
+      "copyrightYear" : "2022",
+      "datePublished": "2022-10-26 14:30:50 \u002b0800 CST",
+      "dateModified" : "2022-10-26 14:30:50 \u002b0800 CST",
+      "url" : "https:\/\/brycerd.github.io\/posts\/test\/",
+      "keywords" : [ "排序","优先队列", ]
+  }
+</script>
+<title>排序算法</title>
+  <meta property="og:title" content="排序算法" />
+  <meta property="og:type" content="article" />
+  <meta property="og:description" content="排序是将一组对象按照某种逻辑顺序重新排列的过程。在计算时代早期，据估计有30%的计算周期都用在排序上，排序在商业数据处理和现在科学计算中都有着很重要的地位，能够应用于事务处理、组合优化、天体物理学、分子动力学、语言学、基因组学、天气预报和很多其他领域，快速排序甚至被誉为20世纪科学和工程领域的十大算法之一。本文主要参考由Robert Sedgewick、Kevin Wayne所著、谢路云所译的Algorithms(第4版)，将讨论比较排序算法的理论基础、若干算法和优先队列。
+初级排序算法 选择排序 选择排序算法采用如下逻辑进行排序：首先，找到数组中最小的元素，然后将它和数组中的第一个元素交换位置；再次，在剩下的元素中找到最小的元素，将它和数组的第二个元素交换位置，如此往复，直到将整个数组排序，选择排序的C&#43;&#43;实现如下：
+1void selectSort(vector&amp;lt;int&amp;gt;&amp;amp; a) 2{ 3	int N = a.size(); 4	for (int i = 0; i &amp;lt; N; &#43;&#43;i) 5	{ 6	int minPos = i; 7	for (int j = i &#43; 1; j &amp;lt; N; &#43;&#43;j) 8	if (a[j] &amp;lt; a[minPos]) minPos = j; 9	swap(a[i], a[minPos]); 10	} 11	return; 12} 选择排序具有如下的特点：
+运行时间和输入分布无关
+无论输入初始是什么状态，是否有序是否反序，选择排序的运行时间并无区别。无论输入为何，选择排序总要运行$(N-1)&#43;(N-2)&#43;&amp;hellip;&#43;1=\frac{N(N-1)}{2}\sim\frac{N^2}{2}$次比较操作和N次交换操作
+元素移动次数是最少的
+如前所述，选择排序共进行N次交换操作，而之后可以看到，其他算法的元素移动次数都是$NlogN\space or\space N^2$级别的
+根据算法分析可知，选择排序要进行$\frac{N(N-1)}{2}$次的比较和N次的移动，总时间复杂度为$O(N^2)$，总空间复杂度为$\Theta(1)$
+插入排序 插入排序基于如下逻辑进行：将每个元素插入到已经排序的子序列中的适当位置。同时，为了给要插入的元素腾出空间，需要将其余所有元素都在插入之前向右移动一位，插入排序的C&#43;&#43;实现如下所示：" />
+  <meta name="description" content="排序是将一组对象按照某种逻辑顺序重新排列的过程。在计算时代早期，据估计有30%的计算周期都用在排序上，排序在商业数据处理和现在科学计算中都有着很重要的地位，能够应用于事务处理、组合优化、天体物理学、分子动力学、语言学、基因组学、天气预报和很多其他领域，快速排序甚至被誉为20世纪科学和工程领域的十大算法之一。本文主要参考由Robert Sedgewick、Kevin Wayne所著、谢路云所译的Algorithms(第4版)，将讨论比较排序算法的理论基础、若干算法和优先队列。
+初级排序算法 选择排序 选择排序算法采用如下逻辑进行排序：首先，找到数组中最小的元素，然后将它和数组中的第一个元素交换位置；再次，在剩下的元素中找到最小的元素，将它和数组的第二个元素交换位置，如此往复，直到将整个数组排序，选择排序的C&#43;&#43;实现如下：
+1void selectSort(vector&amp;lt;int&amp;gt;&amp;amp; a) 2{ 3	int N = a.size(); 4	for (int i = 0; i &amp;lt; N; &#43;&#43;i) 5	{ 6	int minPos = i; 7	for (int j = i &#43; 1; j &amp;lt; N; &#43;&#43;j) 8	if (a[j] &amp;lt; a[minPos]) minPos = j; 9	swap(a[i], a[minPos]); 10	} 11	return; 12} 选择排序具有如下的特点：
+运行时间和输入分布无关
+无论输入初始是什么状态，是否有序是否反序，选择排序的运行时间并无区别。无论输入为何，选择排序总要运行$(N-1)&#43;(N-2)&#43;&amp;hellip;&#43;1=\frac{N(N-1)}{2}\sim\frac{N^2}{2}$次比较操作和N次交换操作
+元素移动次数是最少的
+如前所述，选择排序共进行N次交换操作，而之后可以看到，其他算法的元素移动次数都是$NlogN\space or\space N^2$级别的
+根据算法分析可知，选择排序要进行$\frac{N(N-1)}{2}$次的比较和N次的移动，总时间复杂度为$O(N^2)$，总空间复杂度为$\Theta(1)$
+插入排序 插入排序基于如下逻辑进行：将每个元素插入到已经排序的子序列中的适当位置。同时，为了给要插入的元素腾出空间，需要将其余所有元素都在插入之前向右移动一位，插入排序的C&#43;&#43;实现如下所示：" />
+  <meta property="og:locale" content="zh-cn" /><meta property="og:image" content="/img/b3.ico" />
+  
+
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/flexboxgrid-6.3.1.min.css">
+
+  
+
+  <link href="/index.xml" rel="alternate" type="application/rss+xml"
+    title="Bryce&#39;s Log">
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/iconfont.css">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="/css/katex.min.css">
+<script defer src="/js/katex.min.js"></script>
+<script defer src="/js/auto-render.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+  
+</head>
+
+
+<body>
+  <article class="post " id="article">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="site-header">
+          
+<header>
+  <div class="header-title">
+    <a href="/"
+      >Bryce&#39;s Log</a
+    >
+  </div>
+  <div class="header-subtitle">Log techlogic, Log life</div>
+</header>
+<div class="row end-md center-xs header-items">
+  
+  <div class="header-item">
+    <a href="/categories/tech/"><strong>Tech</strong></a>
+  </div>
+  
+  <div class="header-item">
+    <a href="/categories/life/"><strong>Life</strong></a>
+  </div>
+  <div class="header-item">
+    <div id="search-button">
+      <a class="site-page social-icon search" data-pjax-state="external">
+        <i class="iconfont icon-sousuo1"></i> 
+      </a>
+    </div>
+  </div>
+  
+</div><div id="local-search">
+    <div class="search-dialog">
+        <nav class="search-nav">
+            <span class="search-dialog-title">搜索</span>
+            <span id="loading-status"></span>
+            <button class="search-close-button">
+                <i class="iconfont icon-quxiao4"></i>
+            </button>
+        </nav>
+        <div class="is-center" id="loading-database">
+            <i class="fas fa-spinner fa-pulse"></i>
+            <span>数据库载入中</span>
+        </div>
+        <div class="search-wrap">
+            <div id="local-search-input">
+                <div class="local-search-box">
+                    <input class="local-search-box--input" placeholder="请输入关键词" type="text">
+                </div>
+            </div>
+            <hr>
+            <div id="local-search-results">
+            </div>
+        </div>
+    </div>
+    <div id="search-mask">
+    </div>
+</div>
+
+<div class="row end-xs">
+   
+</div>
+<div class="header-line"></div>
+
+        </div>
+        <header class="post-header">
+          <h1 class="post-title">排序算法</h1>
+          
+          <div class="row post-desc">
+            <div class="col-xs-6">
+              
+              <time class="post-date" datetime="2022-10-26 14:30:50 CST">
+                2022年10月26日
+              </time>
+              
+            </div>
+            <div class="col-xs-6">
+              
+              <div class="post-author">
+                <a target="_blank" href="https://brycerd.github.io/">@Bryce</a>
+              </div>
+              
+            </div>
+          </div>
+          
+        </header>
+
+        <div class="post-content markdown-body">
+          
+          <p>排序是将一组对象按照某种逻辑顺序重新排列的过程。在计算时代早期，据估计有30%的计算周期都用在排序上，排序在商业数据处理和现在科学计算中都有着很重要的地位，能够应用于事务处理、组合优化、天体物理学、分子动力学、语言学、基因组学、天气预报和很多其他领域，快速排序甚至被誉为20世纪科学和工程领域的十大算法之一。本文主要参考由<strong>Robert Sedgewick、Kevin Wayne</strong>所著、<strong>谢路云</strong>所译的<strong>Algorithms</strong>(第4版)，将讨论比较排序算法的理论基础、若干算法和优先队列。</p>
+<h2 id="初级排序算法">初级排序算法</h2>
+<h3 id="选择排序">选择排序</h3>
+<p>选择排序算法采用如下逻辑进行排序：首先，找到数组中最小的元素，然后将它和数组中的第一个元素交换位置；再次，在剩下的元素中找到最小的元素，将它和数组的第二个元素交换位置，如此往复，直到将整个数组排序，选择排序的C++实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">selectSort</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>	<span style="color:#339;font-weight:bold">int</span> N <span style="color:#333">=</span> a.size();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> i <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">0</span>; i <span style="color:#333">&lt;</span> N; <span style="color:#333">++</span>i)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>		<span style="color:#339;font-weight:bold">int</span> minPos <span style="color:#333">=</span> i;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>		<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> j <span style="color:#333">=</span> i <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>; j <span style="color:#333">&lt;</span> N; <span style="color:#333">++</span>j)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>			<span style="color:#080;font-weight:bold">if</span> (a[j] <span style="color:#333">&lt;</span> a[minPos]) minPos <span style="color:#333">=</span> j;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>		swap(a[i], a[minPos]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>}
+</span></span></code></pre></div><p>选择排序具有如下的特点：</p>
+<ul>
+<li>
+<p>运行时间和输入分布无关</p>
+<p>无论输入初始是什么状态，是否有序是否反序，选择排序的运行时间并无区别。无论输入为何，选择排序总要运行$(N-1)+(N-2)+&hellip;+1=\frac{N(N-1)}{2}\sim\frac{N^2}{2}$次比较操作和N次交换操作</p>
+</li>
+<li>
+<p>元素移动次数是最少的</p>
+<p>如前所述，选择排序共进行N次交换操作，而之后可以看到，其他算法的元素移动次数都是$NlogN\space or\space N^2$级别的</p>
+</li>
+</ul>
+<p>根据算法分析可知，选择排序要进行$\frac{N(N-1)}{2}$次的比较和N次的移动，总时间复杂度为$O(N^2)$，总空间复杂度为$\Theta(1)$</p>
+<h3 id="插入排序">插入排序</h3>
+<p>插入排序基于如下逻辑进行：将每个元素插入到已经排序的子序列中的适当位置。同时，为了给要插入的元素腾出空间，需要将其余所有元素都在插入之前向右移动一位，插入排序的C++实现如下所示：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">insertSort</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>	<span style="color:#339;font-weight:bold">int</span> N <span style="color:#333">=</span> a.size();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> i <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">1</span>; i <span style="color:#333">&lt;</span> N; <span style="color:#333">++</span>i)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>		<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> j <span style="color:#333">=</span> i; j <span style="color:#333">&gt;</span> <span style="color:#00d;font-weight:bold">0</span>; <span style="color:#333">--</span>j)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>			<span style="color:#080;font-weight:bold">if</span> (a[j] <span style="color:#333">&lt;</span> a[j <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>])
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>				swap(a[j], a[j <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>			<span style="color:#080;font-weight:bold">else</span> <span style="color:#080;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>}
+</span></span></code></pre></div><p>与选择排序不同，插入排序依赖于输入的状态，如果输入已经有序或接近有序，插入排序算法实际上只需要进行$O(N)$次的比较操作和常数次的移动操作。</p>
+<p><strong>逆序对</strong>是指数组中两个顺序颠倒的元素，即大元素在小元素之前，如果数组中逆序对的数量小于数组大小的某个倍数，那么该数组就是部分有序的，如以下几种</p>
+<ul>
+<li>数组中每个元素距它的最终位置不远</li>
+<li>一个有序的大数组接一个小数组</li>
+<li>数组中只有几个元素的位置不正确</li>
+</ul>
+<p>由插入排序算法可知，算法每次的比较和交换都消除了数组中的一个逆序对，设数组中逆序对的数量为R，则插入排序的元素交换次数为$R$次，元素比较次数的范围是$[R, R+N-1]$，而逆序对数量R的取值范围为$[0,\frac{N(N-1)}{2}]$，因此在平均情况下，插入排序需要$\sim\frac{N^2}{4}$次比较和$\sim\frac{N^2}{4}$次交换，在最坏情况下，需要$\sim\frac{N^2}{2}$次比较和$\sim\frac{N^2}{2}$次交换，在最好情况下，需要$N-1$次比较和0次交换。</p>
+<p>总的来说，插入排序对于部分有序的数组十分高效，也很适合小规模数组，对于逆序对数量很少的输入，插入排序很可能比其他任何算法都快。</p>
+<p>对插入排序一个简单而有效的改进是，每次不交换$a[j]和a[j-1]$的值，而是把大于$a[i]$的值右移一位，通过这种改进可以使得访问数组的次数减半。</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">insertSortX</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>	<span style="color:#339;font-weight:bold">int</span> N <span style="color:#333">=</span> a.size();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> i <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">1</span>; i <span style="color:#333">&lt;</span> N; <span style="color:#333">++</span>i)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>		<span style="color:#339;font-weight:bold">int</span> vi <span style="color:#333">=</span> a[i];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>		<span style="color:#339;font-weight:bold">int</span> j <span style="color:#333">=</span> i;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>		<span style="color:#080;font-weight:bold">while</span> (j <span style="color:#333">&gt;</span> <span style="color:#00d;font-weight:bold">0</span> <span style="color:#333">&amp;&amp;</span> vi <span style="color:#333">&lt;</span> a[j <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>])
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>		{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>			a[j] <span style="color:#333">=</span> a[j <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>			<span style="color:#333">--</span>j;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>		}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>		a[j] <span style="color:#333">=</span> vi;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>}
+</span></span></code></pre></div><p>综上，插入排序的时间复杂为$O(N^2)$，总空间复杂度为$\Theta(1)$</p>
+<h3 id="希尔排序">希尔排序</h3>
+<p>希尔排序是一种基于插入排序改进的快速的排序算法。由前面对插入排序的分析可以知道，插入排序对每一个逆序对都需要进行一次比较和一次交换/移动操作，也就是说，插入排序中一次比较和一次交换/移动操作只能消除序列中的一个逆序对，那么一个直接的想法就是：可不可以通过一次比较和一次交换/移动操作消除序列中多个逆序对呢？希尔排序就做到了这一点。</p>
+<p>希尔排序的思想是使数组中任意间隔为h的元素都是有序的，这样的数组称为h有序数组，一个h有序数组就是h个互相独立的有序数组编织在一起形成的一个数组，在进行排序时，如果h很大，我们就能将元素移动到很远的地方，实现一次消除若干逆序对的目标，对于任意以1结尾的h序列，我们都能够将数组排序。</p>
+<p><img src="https://cdn.jsdelivr.net/gh/YSYin/YLogCDN/img/20210128123604.png" alt="h有序数组"></p>
+<p>希尔排序的C++实现如下所示，这里使用的h序列是[1, 4, 13, 40, 121, 364, &hellip;]：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">shellSort</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>	<span style="color:#339;font-weight:bold">int</span> N <span style="color:#333">=</span> a.size();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	<span style="color:#339;font-weight:bold">int</span> h <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>	<span style="color:#080;font-weight:bold">while</span> (h <span style="color:#333">&lt;</span> N <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">3</span>) h <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">3</span> <span style="color:#333">*</span> h <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>	<span style="color:#080;font-weight:bold">while</span> (h <span style="color:#333">&gt;=</span> <span style="color:#00d;font-weight:bold">1</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>		<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> i <span style="color:#333">=</span> h; i <span style="color:#333">&lt;</span> N; <span style="color:#333">++</span>i)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>			<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> j <span style="color:#333">=</span> i; j <span style="color:#333">&gt;=</span> h; j <span style="color:#333">-=</span> h)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>				<span style="color:#080;font-weight:bold">if</span> (a[j] <span style="color:#333">&lt;</span> a[j <span style="color:#333">-</span> h])
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>					swap(a[j], a[j <span style="color:#333">-</span> h]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>		h <span style="color:#333">/=</span> <span style="color:#00d;font-weight:bold">3</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>}
+</span></span></code></pre></div><p>与希尔排序性能密切相关的因素是h递增序列。目前尚无法确定哪一种h递增序列是最佳的序列，对希尔排序进行准确的数学分析是十分困难和繁杂的，但有一点可以确定，对于我们实现的希尔排序算法，它的时间复杂度不到平方级别，研究表明最坏情况下其比较次数为$O(N^{\frac{3}{2}})$</p>
+<p>由上，我们实现的希尔排序的时间复杂度为$O(N^{\frac{3}{2}})$，空间复杂度为$\Theta(1)$</p>
+<h2 id="归并排序">归并排序</h2>
+<p>归并排序是基于分治思想的一种排序算法，简单，但有效，成功地将排序的比较操作降低到nlogn量级，尽管其代价是需要和 N成正比的额外空间。</p>
+<p>归并算法的思想十分简单，即将两个有序的数组顺序遍历归并成一个更大的有序数组。首先将一个数组（递归地）分成两半并分别排序，然后将结果归纳出来，归并排序的C++实现如下所示</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">merge</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a, vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> aux, <span style="color:#339;font-weight:bold">int</span> lo, <span style="color:#339;font-weight:bold">int</span> mid, <span style="color:#339;font-weight:bold">int</span> hi)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>	<span style="color:#339;font-weight:bold">int</span> i <span style="color:#333">=</span> lo, j <span style="color:#333">=</span> mid <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> k <span style="color:#333">=</span> lo; k <span style="color:#333">&lt;=</span> hi; <span style="color:#333">++</span>k)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>		aux[k] <span style="color:#333">=</span> a[k];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>	<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> k <span style="color:#333">=</span> lo; k <span style="color:#333">&lt;=</span> hi; <span style="color:#333">++</span>k)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>		<span style="color:#080;font-weight:bold">if</span> (i <span style="color:#333">&gt;</span> mid) a[k] <span style="color:#333">=</span> aux[j<span style="color:#333">++</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>		<span style="color:#080;font-weight:bold">else</span> <span style="color:#080;font-weight:bold">if</span> (j <span style="color:#333">&gt;</span> hi) a[k] <span style="color:#333">=</span> aux[i<span style="color:#333">++</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>		<span style="color:#080;font-weight:bold">else</span> <span style="color:#080;font-weight:bold">if</span> (aux[i] <span style="color:#333">&lt;</span> aux[j]) a[k] <span style="color:#333">=</span> aux[i<span style="color:#333">++</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>		<span style="color:#080;font-weight:bold">else</span> a[k] <span style="color:#333">=</span> aux[j<span style="color:#333">++</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">mergeSort</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a, vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> aux, <span style="color:#339;font-weight:bold">int</span> lo, <span style="color:#339;font-weight:bold">int</span> hi)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>	<span style="color:#080;font-weight:bold">if</span> (hi <span style="color:#333">&lt;=</span> lo) <span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>	<span style="color:#339;font-weight:bold">int</span> mid <span style="color:#333">=</span> lo <span style="color:#333">+</span> (hi <span style="color:#333">-</span> lo) <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">2</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>	mergeSort(a, aux, lo, mid);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>	mergeSort(a, aux, mid <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>, hi);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>	merge(a, aux, lo, mid, hi);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>	<span style="color:#080;font-weight:bold">return</span>; 
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">mergeSort</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>	<span style="color:#339;font-weight:bold">int</span> N <span style="color:#333">=</span> a.size();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>	vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;</span> aux(N, <span style="color:#00d;font-weight:bold">0</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>	mergeSort(a, aux, <span style="color:#00d;font-weight:bold">0</span>, N <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>}
+</span></span></code></pre></div><p>这是一种自顶向下的递归实现方式，需要额外的数组aux用于归并操作，空间复杂度为$O(N)$，可以证明，至少需要$\frac{1}{2}NlogN到NlogN$次比较操作，访问数组次数为$4NlogN到6NlogN$次，由此，归并排序的时间复杂度为$O(NlogN)$</p>
+<p>归并排序算法将排序的时间复杂度降低到了线性对数级别，尽管如此，仍然通过某些技巧进一步降低归并排序的运行时间。</p>
+<h3 id="小规模数组采用插入排序">小规模数组采用插入排序</h3>
+<p><strong>用不同的方法处理小规模问题能改进大多数递归算法的性能，因为递归会使得小规模问题中方法的调用过于频繁，所以改进对它们的处理方法就能改进整个算法。</strong></p>
+<p>之前，我们已经知道插入排序在小规模数组上的高效性，实践证明，使用插入排序处理小规模子数组（比如长度小于15）一般可以将归并排序的运行时间缩短10%~15%</p>
+<h3 id="测试数组是否有序">测试数组是否有序</h3>
+<p>可以添加一个判断条件，如果a[mid]≤a[mid+1]，我们就认为数组已经是有序的，从而跳过merge方法，通过这个调整，可以将任意有序的子数组算法的运行时间变为O(N)</p>
+<h2 id="快速排序">快速排序</h2>
+<p>快速排序被誉为20世纪科学和工程领域的十大算法之一，它实现简单、适用于各种不同的输入数据而且在一般应用中比其他排序算法快得多，快速排序是原地排序（只需要一个很小的辅助栈），且时间复杂度是$O(NlogN)$级别。</p>
+<p>快速排序是一种分治的排序算法，主要实现逻辑是：切分+排序，即使用数组中的某个元素将数组划分为两部分，左半部分都比该元素小，右半部分都比该元素大，然后对左半部分和右半部分分别如此处理，直到子数组中元素数量为1，快速排序的C++实现如下所示：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#339;font-weight:bold">int</span> <span style="color:#06b;font-weight:bold">partition</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a, <span style="color:#339;font-weight:bold">int</span> lo, <span style="color:#339;font-weight:bold">int</span> hi)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>	<span style="color:#339;font-weight:bold">int</span> i <span style="color:#333">=</span> lo, j <span style="color:#333">=</span> hi <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	<span style="color:#339;font-weight:bold">int</span> v <span style="color:#333">=</span> a[lo];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>	<span style="color:#080;font-weight:bold">while</span> (<span style="color:#007020">true</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>		<span style="color:#080;font-weight:bold">while</span> (a[<span style="color:#333">++</span>i] <span style="color:#333">&lt;</span> v) <span style="color:#080;font-weight:bold">if</span> (i <span style="color:#333">==</span> hi) <span style="color:#080;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>		<span style="color:#080;font-weight:bold">while</span> (a[<span style="color:#333">--</span>j] <span style="color:#333">&gt;</span> v) <span style="color:#080;font-weight:bold">if</span> (j <span style="color:#333">==</span> lo) <span style="color:#080;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>		<span style="color:#080;font-weight:bold">if</span> (i <span style="color:#333">&gt;=</span> j) <span style="color:#080;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>		swap(a[i], a[j]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>	swap(a[lo], a[j]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>	<span style="color:#080;font-weight:bold">return</span> j;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">quickSort</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a, <span style="color:#339;font-weight:bold">int</span> lo, <span style="color:#339;font-weight:bold">int</span> hi)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>	<span style="color:#080;font-weight:bold">if</span> (hi <span style="color:#333">&lt;=</span> lo) <span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>	<span style="color:#339;font-weight:bold">int</span> j <span style="color:#333">=</span> partition(a, lo, hi);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>	quickSort(a, lo, j <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>	quickSort(a, j <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>, hi);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">quickSort</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>	<span style="color:#339;font-weight:bold">int</span> N <span style="color:#333">=</span> a.size();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>	quickSort(a, <span style="color:#00d;font-weight:bold">0</span>, N <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>}
+</span></span></code></pre></div><p>从归并排序的实现可以发现，在切分<code>partition</code>操作的内循环中，只需要将数组元素和一个定值进行比较即可，这种短小的内循环是快速排序优良性能的原因之一，事实上，归并排序和希尔排序一般都比快速排序慢，其原因就是它们还在内循环中移动数据。</p>
+<p>显然，快速排序的效率取决于划分的效果，但平均情况下，快速排序需要$\sim2NlnN$次比较，以及$\sim\frac{1}{3}NlnN$次交换操作，最坏情况下，快速排序需要$\sim\frac{N^2}{2}$次比较操作，但通过随机打乱数组能够预防这种情况，事实上，快速排序处在最坏情况下的概率极小，例如，对于一个有着100万个元素的数组，其快排运行时间是平均所需时间的10倍的概率低于0.00001，对于大数组，运行时间是平方级别的概率可以忽略不计。</p>
+<p>快速排序和归并排序都是时间复杂度达到$O(NlogN)$级别的排序算法，二者都是分治算法的典型应用。分治算法的两大核心步骤是分和并：归并排序的关键操作在于并，分则按照数组长度对半自然划分；快速排序的关键操作在于分，并则将排序结果自然合并。在时间复杂度上，尽管快速排序的平均比较次数比归并排序多$39%$，但是它移动数据的次数更少，一般情况下，快速排序都要快于归并排序；在空间复杂度上，快速排序是一种原地排序，不需要额外的空间，归并排序则需要$O(N)$的空间进行归并；总体而说，快速排序是一种接近最优的排序方法。</p>
+<h3 id="快速排序的改进">快速排序的改进</h3>
+<p>自Hoare第一次发表快速排序算法开始，人们就不断提出各种改进方法，有些改进带来的提高可能会被意外的副作用所抵消，但有些改进也在一定程度上提升了快排的性能，下面介绍的几种改进方法一般能将排序性能提升$20%\sim30%$</p>
+<ul>
+<li>
+<p>小规模数组时采用插入排序而不是快速排序</p>
+</li>
+<li>
+<p>三取样切分</p>
+<p>切分数组中，取样3个元素，用中位数作为切分元素进行划分</p>
+</li>
+<li>
+<p>三向切分</p>
+<p>对于大量重复元素的数组，可以采用三向切分的方式进行快速排序：将数组切分为三部分，分别对应于小于、等于和大于切分元素的数组元素，三向切分的C++实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">quickSort3Way</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a, <span style="color:#339;font-weight:bold">int</span> lo, <span style="color:#339;font-weight:bold">int</span> hi)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>	<span style="color:#080;font-weight:bold">if</span> (hi <span style="color:#333">&lt;=</span> lo) <span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	<span style="color:#339;font-weight:bold">int</span> lt <span style="color:#333">=</span> lo, i <span style="color:#333">=</span> lo <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>, gt <span style="color:#333">=</span> hi;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>	<span style="color:#339;font-weight:bold">int</span> v <span style="color:#333">=</span> a[lo];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>	<span style="color:#080;font-weight:bold">while</span> (i <span style="color:#333">&lt;=</span> gt)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>		<span style="color:#080;font-weight:bold">if</span> (a[i] <span style="color:#333">&lt;</span> v) swap(a[lt<span style="color:#333">++</span>], a[i<span style="color:#333">++</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>		<span style="color:#080;font-weight:bold">else</span> <span style="color:#080;font-weight:bold">if</span> (a[i] <span style="color:#333">&gt;</span> v) swap(a[i], a[gt<span style="color:#333">--</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>		<span style="color:#080;font-weight:bold">else</span> <span style="color:#333">++</span>i;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>	quickSort(a, lo, lt <span style="color:#333">-</span> <span style="color:#00d;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>	quickSort(a, gt <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>, hi);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>}
+</span></span></code></pre></div></li>
+</ul>
+<h2 id="优先队列">优先队列</h2>
+<p>许多应用程序需要处理有序的元素，但不需要他们全部有序，或者不需要一次就将他们排序，很多情况下，我们只需要处理当前键值最大的元素，并且可能还需要随时收集更多的元素，然后再处理此时键值最大的元素。在这种情况下，一个合适的数据结构应该支持两种操作：返回(或同时删除)最大元素、插入元素，这种数据类型就叫做优先队列。</p>
+<p>数据结构二叉堆能很好的实现优先队列的基本操作，在二叉堆的数组中，每个元素都要保证大于等于另两个特定位置的元素，相应地，这些位置的元素又至少要大于等于数组中的另两个元素，以此类推。对于一个二叉树来说，如果二叉树的每个结点都大于等于它的两个子结点时，它被称为堆有序，在这种情况下，根结点是堆有序的二叉树的最大结点。</p>
+<p>在存储二叉堆时，如果使用指针表示结点的父子关系，那么每个结点都需要三个指针进行存储；而根据完全二叉树的性质，当我们把完全二叉树存储到数组中时，实际上通过数组索引即可表示结点的父子关系，由此，我们使用数组存储二叉堆，并将二叉堆定义为：一组能够用堆有序的完全二叉树排序的元素，并在数组中按照层级存储（不使用数组中的第一个位置/索引为0）</p>
+<p>易得，在二叉堆中，位置k的结点的父结点的位置为$\lfloor\frac{k}{2}\rfloor$，它的两个子结点的位置分别为$2k和2k+1$</p>
+<p>在对二叉堆进行上述的两种操作时，我们采用的步骤是：改动堆并打破堆的状态+遍历堆并按要求将堆的状态恢复，这个过程叫做堆的有序化。</p>
+<p>堆的有序化对应两种类型的操作</p>
+<ul>
+<li>当某个结点的优先级上升（或是在堆底加入一个新的元素）时，由下至上的恢复堆的顺序</li>
+<li>当某个结点的优先级下降（如将根结点替换为一个较小的元素）时，由上至下的恢复堆的顺序</li>
+</ul>
+<h3 id="由下至上的堆有序化上浮">由下至上的堆有序化/上浮</h3>
+<p>如果堆的有序状态因为某个结点变得比父结点更大而被打破，则需要交换它和它的父结点，逐步上溯，直到有序状态恢复</p>
+<h3 id="由上至下的堆有序化下沉">由上至下的堆有序化/下沉</h3>
+<p>如果堆的有序状态因为某个结点变得比子结点更小而被打破，则需要将它和它的两个子结点中的较大者交换来恢复堆，逐步下行，直到有序状态恢复</p>
+<p>根据这两种调整方式，我们可以进行插入元素和返回(或同时删除)最大元素：插入元素时，将新元素加到数组末尾，增加堆的大小并将该元素上浮到合适的位置；删除最大元素时，将数组最后一个元素覆盖到数组第一个元素(即根结点)，减少堆的大小并将该元素下沉到合适的位置，由上，二叉堆实现的优先队列的C++实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">MaxPQ</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#080;font-weight:bold">private</span><span style="color:#333">:</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;</span> pq;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>	<span style="color:#339;font-weight:bold">int</span> N;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span><span style="color:#080;font-weight:bold">public</span><span style="color:#333">:</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>	MaxPQ(<span style="color:#339;font-weight:bold">int</span> maxN)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>		N <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">0</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>		pq.resize(maxN <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>	<span style="color:#339;font-weight:bold">int</span> <span style="color:#06b;font-weight:bold">size</span>()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>		<span style="color:#080;font-weight:bold">return</span> N;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>	<span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">swim</span>(<span style="color:#339;font-weight:bold">int</span> k)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>		<span style="color:#080;font-weight:bold">while</span> (k <span style="color:#333">&gt;</span> <span style="color:#00d;font-weight:bold">1</span> <span style="color:#333">&amp;&amp;</span> pq[k <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">2</span>] <span style="color:#333">&lt;</span> pq[k])
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>		{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>			swap(pq[k <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">2</span>], pq[k]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>			k <span style="color:#333">/=</span> <span style="color:#00d;font-weight:bold">2</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>		}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>		<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>	<span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">sink</span>(<span style="color:#339;font-weight:bold">int</span> k)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>		<span style="color:#080;font-weight:bold">while</span> (<span style="color:#00d;font-weight:bold">2</span> <span style="color:#333">*</span> k <span style="color:#333">&lt;=</span> N)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>		{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>			<span style="color:#339;font-weight:bold">int</span> j <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">2</span> <span style="color:#333">*</span> k;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span>			<span style="color:#080;font-weight:bold">if</span> (j <span style="color:#333">&lt;</span> N <span style="color:#333">&amp;&amp;</span> pq[j] <span style="color:#333">&lt;</span> pq[j <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>]) j<span style="color:#333">++</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>			<span style="color:#080;font-weight:bold">if</span> (pq[k] <span style="color:#333">&gt;=</span> pq[j]) <span style="color:#080;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span>			swap(pq[k], pq[j]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span><span>			k <span style="color:#333">=</span> j;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span><span>		}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span><span>		<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span><span>	<span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">insert</span>(<span style="color:#339;font-weight:bold">int</span> v)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span>		pq[<span style="color:#333">++</span>N] <span style="color:#333">=</span> v;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span>		swim(N);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span><span>		<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span><span>	<span style="color:#339;font-weight:bold">int</span> <span style="color:#06b;font-weight:bold">delMax</span>()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45</span><span>		<span style="color:#339;font-weight:bold">int</span> max <span style="color:#333">=</span> pq[<span style="color:#00d;font-weight:bold">1</span>];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46</span><span>		swap(pq[<span style="color:#00d;font-weight:bold">1</span>], pq[N<span style="color:#333">--</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47</span><span>		pq[N <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>] <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">0</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48</span><span>		sink(<span style="color:#00d;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49</span><span>		<span style="color:#080;font-weight:bold">return</span> max;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51</span><span>};
+</span></span></code></pre></div><p>根据完全二叉堆的性质可以知道，二叉堆的树深至多为$O(logN)$，则由代码分析可知，插入操作至多需要$logN+1$次比较，删除最大元素至多需要$2logN$次比较</p>
+<h2 id="堆排序">堆排序</h2>
+<p>根据优先队列的性质，我们可以将优先队列变成一种排序方法，即将所有元素插入一个查找最小元素的优先队列，然后再重复调用删除最小元素的操作来将它们按顺序删去。</p>
+<p>堆排序可以分为两个阶段。在堆的构造阶段中，将原始数组重新组织安排进一个堆中；在下沉排序阶段中，从堆中按递减顺序取出所有元素并得到排序结果。为了尽量减少堆的占用空间，我们使用原始数组作为堆的存储数组，从而无需任何额外空间。</p>
+<h3 id="堆的构造">堆的构造</h3>
+<p>在给定数组中构造堆的最简单的方式是从左至右逐元素插入到堆中，这个过程的时间复杂度是$O(NlogN)$。一种更高效的方法是从右至左用sink方法构造子堆：如果一个结点的两个子结点都已经是堆了，那么在该结点上调用sink方法可以将其变为一个堆。开始时，只需要扫描数组中的一半元素，因为可以跳过大小为1的子堆，然后依次处理大小为3的堆、大小为7的堆&hellip;最后在位置1上调用sink方法即可构建一个堆；堆排序的C++实现如下：</p>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">sink</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> pq, <span style="color:#339;font-weight:bold">int</span> k, <span style="color:#339;font-weight:bold">int</span> N)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span>	<span style="color:#080;font-weight:bold">while</span> (<span style="color:#00d;font-weight:bold">2</span> <span style="color:#333">*</span> k <span style="color:#333">&lt;=</span> N)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>		<span style="color:#339;font-weight:bold">int</span> j <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">2</span> <span style="color:#333">*</span> k;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>		<span style="color:#080;font-weight:bold">if</span> (j <span style="color:#333">&lt;</span> N <span style="color:#333">&amp;&amp;</span> pq[j] <span style="color:#333">&lt;</span> pq[j <span style="color:#333">+</span> <span style="color:#00d;font-weight:bold">1</span>]) j<span style="color:#333">++</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span>		<span style="color:#080;font-weight:bold">if</span> (pq[k] <span style="color:#333">&gt;=</span> pq[j]) <span style="color:#080;font-weight:bold">break</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>		swap(pq[k], pq[j]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>		k <span style="color:#333">=</span> j;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span><span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">heapSort</span>(vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;&amp;</span> a)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>	<span style="color:#339;font-weight:bold">int</span> N <span style="color:#333">=</span> a.size();
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>	<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> k <span style="color:#333">=</span> N <span style="color:#333">/</span> <span style="color:#00d;font-weight:bold">2</span>; k <span style="color:#333">&gt;=</span> <span style="color:#00d;font-weight:bold">1</span>; <span style="color:#333">--</span>k)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>		sink(a, k, N);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>	<span style="color:#080;font-weight:bold">while</span> (N <span style="color:#333">&gt;</span> <span style="color:#00d;font-weight:bold">1</span>)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>		swap(a[<span style="color:#00d;font-weight:bold">1</span>], a[N<span style="color:#333">--</span>]);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>		sink(a, <span style="color:#00d;font-weight:bold">1</span>, N);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>	<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>}
+</span></span></code></pre></div><p>观察可以得到，用下沉操作构建堆只需少于2N次比较以及少于N次的交换</p>
+<p>在排序阶段，将堆的根结点和堆的最后一个结点交换位置，同时减少堆的大小，然后通过下沉操作将最后一个结点放到合适位置，同时得到新的最大元素，这个过程至多需要$2NlogN$次比较操作和$NlogN$次交换操作</p>
+<p>综上，堆排序最坏情况下的比较次数是$2NlogN+2N$，交换次数是$NlogN+N$</p>
+<p><strong>堆排序在排序复杂性的研究中有着重要的地位，因为它是我们所知的唯一能够同时最优的利用空间和时间的方法——在最坏的情况下也能保证使用$\sim2NlogN$次比较和恒定的额外空间。但在现代系统的许多应用很少使用它，这是因为它无法利用缓存，数组元素很少和相邻的其他元素进行比较，因此缓存未命中的次数要远远高于大多数在相邻元素间进行的算法，如快速排序、归并排序、希尔排序</strong></p>
+<h2 id="排序问题的算法复杂度">排序问题的算法复杂度</h2>
+<p>可以通过决策树证明，在以比较操作为基本操作的算法类中，任何排序算法至少需要$O(logN!)\sim O(NlogN)$次比较操作，由此可见，归并排序、快速排序、堆排序已经是基于比较的排序算法的最优者。</p>
+<h2 id="总结">总结</h2>
+<p>前述所有排序算法的性能特点如下：</p>
+<p><img src="https://cdn.jsdelivr.net/gh/YSYin/YLogCDN/img/20210203210702.png" alt="各种排序算法的性能特点"></p>
+
+        </div>
+
+        <div class="row middle-xs">
+          <div class="col-xs-12">
+            
+            <div class="post-tags">
+              <a href="/tags/%E6%8E%92%E5%BA%8F/">
+                排序
+              </a>
+            </div>
+            
+            <div class="post-tags">
+              <a href="/tags/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/">
+                优先队列
+              </a>
+            </div>
+            
+          </div>
+        </div>
+        
+          <div class="row">
+            <div class="col-xs-12">
+              
+            </div>
+          </div>
+
+          
+
+
+
+          
+          
+          <div style="height: 50px;"></div>
+          
+        
+
+        <div class="site-footer">
+
+</div>
+
+      </div>
+    </div>
+  </article>
+
+  
+
+
+<script src="/js/jquery.slim.min.js"></script>
+<script src="/js/pjax.min.js"></script>
+
+<script src="/js/util.js"></script>
+
+<script src="/js/decrypt.js"></script>
+
+<script src="/js/localsearch.js"></script>
+  
+
+</body>
+
+</html>

@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Hugo 0.106.0-DEV">
+
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="author" content="Bryce" />
+  <meta property="og:url" content="https://brycerd.github.io/posts/hello/" />
+  <link rel="canonical" href="https://brycerd.github.io/posts/hello/" /><link rel="apple-touch-icon" href="/img/b3.ico" />
+  <link rel="icon" href="/img/b3.ico" />
+  <link rel="shortcut" href="/img/b3.ico" /><link rel="alternate" type="application/atom+xml" href="https://brycerd.github.io/index.xml" title="Bryce&#39;s Log">
+
+  <script type="application/ld+json">
+  {
+      "@context" : "http://schema.org",
+      "@type" : "BlogPosting",
+      "mainEntityOfPage": {
+           "@type": "WebPage",
+           "@id": "https:\/\/brycerd.github.io\/"
+      },
+      "articleSection" : "posts",
+      "name" : "你好，Hugo",
+      "headline" : "你好，Hugo",
+      "description" : "问题 public bucket：\nprivate bucket：\n假定输入一列整数对，其中每个整数都代表一个某种类型的对象，一对整数p和q可以被理解为：p和q是相连的，并且相连是一种等价关系，即满足自反性、对称性和传递性。等价关系将对象分为多个等价类，则问题是我们如何快速的对输入的新整数对进行判断：该整数对是否位于同一等价类，以及等价类的数目？\ntest picgo：\n将这个问题转化到无向图中，将每个整数对应图中的一个节点，相连关系对应两个节点的一条边，则一个等价类就对应图中的一个连通分量，即图的一个极大连通子图，该子图内任意两个节点都能直接或间接相连，那么问题是如何快速判断两个节点是否位于一个连通分量中，以及连通分量的数目？\nAPI 将该问题抽象为一个数据结构类UF，其API设计如下\n如上，我们需要定义一种数据结构表示已有的连接，基于该数据结构实现高效的union find等算法，我们可以使用一个id数组作为基本数据结构，使用节点标号作为索引，而id值则表示该节点所属的连通分量\nquick-find算法 直观上，我们可以通过保证当且仅当id[p]等于id[q]时，p和q是连通的，即同一个连通分量的所有节点的id值相同。这是一种quick-find的算法，因为我们只需要访问id数组一次就可以得到节点所在的连通分量标号，但是对于union操作来说，我们在合并两个连通分量P和Q时，必须遍历整个id数组，把其中指向P的节点改为指向Q，这是一个线性时间的操作\n由上，我们可以得到find操作的时间复杂度为O(1), union操作的时间复杂度为O(n)\n假设构建连通图的整数对有n个，查询连通图的整数对有n个，那么，整个过程的时间复杂度是：$n*(O(1)\u002bO(n))\u002bn*(O(1))=O(n^2)$\n对于特别大的节点数量来说，这种复杂度是不可接受的。\nquick-union算法 在quick-find算法中，瓶颈在于union操作，每次合并连通分量时都需要遍历整个数组，为了减少遍历和修改的次数，我们重新定义id数组，每个节点所对应的id值都是该连通分量内另一个节点的名称，即id对应链接，如果一个节点的链接指向自己，那么该节点作为该连通分量的根节点，代表了该连通分量，一个连通分量内的全部节点实际上通过这种链接形成了一棵树。\n由上，在find操作时，我们不断沿着节点的链接上溯，直到找到该连通分量的根节点，union操作时，我们首先调用find函数得到两个连通分量的根节点，然后将其中一个根节点指向另一个根节点即可。\n设连通分量对应树的深度为d，则find操作的时间复杂度为O(d)，union操作的时间复杂度为O(d)\n由于在合并连通分量时任意选择一个根节点指向另一个根节点，因此树的最大深度为n，在最坏情况下，find操作的时间复杂度为O(n)，union操作的时间复杂度也是O(n)\n加权quick-union算法 在quick-union算法中，find和union操作的时间复杂度依赖于连通分量树的深度。为了控制树的最大深度，我们可以控制合并时的操作：总是让节点数少的树连接到节点数多的树上。增加新的数据结构sz数组记录每个连通分量的节点数目，在合并操作时，总是让节点数目大的根节点作为父节点，而另一个少的根节点作为子节点，以此控制数的最大深度。\n可以证明，这种情况下树的最大深度为$log(n)$\n由上，find操作的时间复杂度为O(logn)，union操作的时间复杂度为O(logn)，总时间复杂度为O(nlogn)\n合并两个连通分量时，除了采用节点数目作为控制的权，我们也可以直接采用树的深度作为权。即在合并时，将深度小的树连接到深度大的树，如果深度相等，则任意连接，并将父节点的深度加一，可以证明，这种方式下树的最大深度也是logn\n本人之见，两种加权方式（数量权和深度权）的区别在于\nunion操作时，数量权每次都要改变，而深度权只有在两个深度相同时才需要改变 两种加权方式虽然都能保证树的最大深度不超过logn，但是数量权可以保证更多的节点处在更接近根节点的位置 带路径压缩的加权quick-union算法 加权quick-union算法可以确保树的深度不超过logn，但我们也可以采取某种方式进一步压缩树的深度：find操作时路径压缩。\n在执行find操作时，我们以往只是从节点不断上溯，直到找到根节点，上溯的步数为该节点所在的深度$d\u0026rsquo;$，赋值操作的数量也是$d\u0026rsquo;$，我们可以采取一种折半压缩的方式，每次上溯时，把节点的父节点修改为节点的祖父节点，然后从祖父节点继续上溯，这种方式下，树的深度会减少$d\u0026rsquo;\/2$，而上溯的步数也变为$d\u0026rsquo;\/2$，总赋值操作的数量为$2*d\u0026rsquo;\/2=d\u0027$\n由上，此时find操作的时间复杂度非常接近O(1)，union操作的时间复杂度也非常接近O(1)，总时间复杂度非常接近O(n)\n所有union-find算法的性能如下：\n带路径压缩的加(深度)权quick-union算法的C\u002b\u002b实现 1class UF 2{ 3private: 4\tvector\u0026lt;int\u0026gt; parent; 5\tvector\u0026lt;int\u0026gt; rank; 6\tint count; 7public: 8\tUF(int N) 9\t{ 10\tcount = N; 11\tfor (int i = 0; i \u0026lt; N; \u002b\u002bi) 12\t{ 13\tparent.",
+      "inLanguage" : "en-US",
+      "author" : "Bryce",
+      "creator" : "Bryce",
+      "publisher": "Bryce",
+      "accountablePerson" : "Bryce",
+      "copyrightHolder" : "Bryce",
+      "copyrightYear" : "2022",
+      "datePublished": "2022-10-26 14:30:57 \u002b0800 CST",
+      "dateModified" : "2022-10-26 14:30:57 \u002b0800 CST",
+      "url" : "https:\/\/brycerd.github.io\/posts\/hello\/",
+      "keywords" : [ "排序","并查集", ]
+  }
+</script>
+<title>你好，Hugo</title>
+  <meta property="og:title" content="你好，Hugo" />
+  <meta property="og:type" content="article" />
+  <meta property="og:description" content="问题 public bucket：
+private bucket：
+假定输入一列整数对，其中每个整数都代表一个某种类型的对象，一对整数p和q可以被理解为：p和q是相连的，并且相连是一种等价关系，即满足自反性、对称性和传递性。等价关系将对象分为多个等价类，则问题是我们如何快速的对输入的新整数对进行判断：该整数对是否位于同一等价类，以及等价类的数目？
+test picgo：
+将这个问题转化到无向图中，将每个整数对应图中的一个节点，相连关系对应两个节点的一条边，则一个等价类就对应图中的一个连通分量，即图的一个极大连通子图，该子图内任意两个节点都能直接或间接相连，那么问题是如何快速判断两个节点是否位于一个连通分量中，以及连通分量的数目？
+API 将该问题抽象为一个数据结构类UF，其API设计如下
+如上，我们需要定义一种数据结构表示已有的连接，基于该数据结构实现高效的union find等算法，我们可以使用一个id数组作为基本数据结构，使用节点标号作为索引，而id值则表示该节点所属的连通分量
+quick-find算法 直观上，我们可以通过保证当且仅当id[p]等于id[q]时，p和q是连通的，即同一个连通分量的所有节点的id值相同。这是一种quick-find的算法，因为我们只需要访问id数组一次就可以得到节点所在的连通分量标号，但是对于union操作来说，我们在合并两个连通分量P和Q时，必须遍历整个id数组，把其中指向P的节点改为指向Q，这是一个线性时间的操作
+由上，我们可以得到find操作的时间复杂度为O(1), union操作的时间复杂度为O(n)
+假设构建连通图的整数对有n个，查询连通图的整数对有n个，那么，整个过程的时间复杂度是：$n*(O(1)&#43;O(n))&#43;n*(O(1))=O(n^2)$
+对于特别大的节点数量来说，这种复杂度是不可接受的。
+quick-union算法 在quick-find算法中，瓶颈在于union操作，每次合并连通分量时都需要遍历整个数组，为了减少遍历和修改的次数，我们重新定义id数组，每个节点所对应的id值都是该连通分量内另一个节点的名称，即id对应链接，如果一个节点的链接指向自己，那么该节点作为该连通分量的根节点，代表了该连通分量，一个连通分量内的全部节点实际上通过这种链接形成了一棵树。
+由上，在find操作时，我们不断沿着节点的链接上溯，直到找到该连通分量的根节点，union操作时，我们首先调用find函数得到两个连通分量的根节点，然后将其中一个根节点指向另一个根节点即可。
+设连通分量对应树的深度为d，则find操作的时间复杂度为O(d)，union操作的时间复杂度为O(d)
+由于在合并连通分量时任意选择一个根节点指向另一个根节点，因此树的最大深度为n，在最坏情况下，find操作的时间复杂度为O(n)，union操作的时间复杂度也是O(n)
+加权quick-union算法 在quick-union算法中，find和union操作的时间复杂度依赖于连通分量树的深度。为了控制树的最大深度，我们可以控制合并时的操作：总是让节点数少的树连接到节点数多的树上。增加新的数据结构sz数组记录每个连通分量的节点数目，在合并操作时，总是让节点数目大的根节点作为父节点，而另一个少的根节点作为子节点，以此控制数的最大深度。
+可以证明，这种情况下树的最大深度为$log(n)$
+由上，find操作的时间复杂度为O(logn)，union操作的时间复杂度为O(logn)，总时间复杂度为O(nlogn)
+合并两个连通分量时，除了采用节点数目作为控制的权，我们也可以直接采用树的深度作为权。即在合并时，将深度小的树连接到深度大的树，如果深度相等，则任意连接，并将父节点的深度加一，可以证明，这种方式下树的最大深度也是logn
+本人之见，两种加权方式（数量权和深度权）的区别在于
+union操作时，数量权每次都要改变，而深度权只有在两个深度相同时才需要改变 两种加权方式虽然都能保证树的最大深度不超过logn，但是数量权可以保证更多的节点处在更接近根节点的位置 带路径压缩的加权quick-union算法 加权quick-union算法可以确保树的深度不超过logn，但我们也可以采取某种方式进一步压缩树的深度：find操作时路径压缩。
+在执行find操作时，我们以往只是从节点不断上溯，直到找到根节点，上溯的步数为该节点所在的深度$d&amp;rsquo;$，赋值操作的数量也是$d&amp;rsquo;$，我们可以采取一种折半压缩的方式，每次上溯时，把节点的父节点修改为节点的祖父节点，然后从祖父节点继续上溯，这种方式下，树的深度会减少$d&amp;rsquo;/2$，而上溯的步数也变为$d&amp;rsquo;/2$，总赋值操作的数量为$2*d&amp;rsquo;/2=d&#39;$
+由上，此时find操作的时间复杂度非常接近O(1)，union操作的时间复杂度也非常接近O(1)，总时间复杂度非常接近O(n)
+所有union-find算法的性能如下：
+带路径压缩的加(深度)权quick-union算法的C&#43;&#43;实现 1class UF 2{ 3private: 4	vector&amp;lt;int&amp;gt; parent; 5	vector&amp;lt;int&amp;gt; rank; 6	int count; 7public: 8	UF(int N) 9	{ 10	count = N; 11	for (int i = 0; i &amp;lt; N; &#43;&#43;i) 12	{ 13	parent." />
+  <meta name="description" content="问题 public bucket：
+private bucket：
+假定输入一列整数对，其中每个整数都代表一个某种类型的对象，一对整数p和q可以被理解为：p和q是相连的，并且相连是一种等价关系，即满足自反性、对称性和传递性。等价关系将对象分为多个等价类，则问题是我们如何快速的对输入的新整数对进行判断：该整数对是否位于同一等价类，以及等价类的数目？
+test picgo：
+将这个问题转化到无向图中，将每个整数对应图中的一个节点，相连关系对应两个节点的一条边，则一个等价类就对应图中的一个连通分量，即图的一个极大连通子图，该子图内任意两个节点都能直接或间接相连，那么问题是如何快速判断两个节点是否位于一个连通分量中，以及连通分量的数目？
+API 将该问题抽象为一个数据结构类UF，其API设计如下
+如上，我们需要定义一种数据结构表示已有的连接，基于该数据结构实现高效的union find等算法，我们可以使用一个id数组作为基本数据结构，使用节点标号作为索引，而id值则表示该节点所属的连通分量
+quick-find算法 直观上，我们可以通过保证当且仅当id[p]等于id[q]时，p和q是连通的，即同一个连通分量的所有节点的id值相同。这是一种quick-find的算法，因为我们只需要访问id数组一次就可以得到节点所在的连通分量标号，但是对于union操作来说，我们在合并两个连通分量P和Q时，必须遍历整个id数组，把其中指向P的节点改为指向Q，这是一个线性时间的操作
+由上，我们可以得到find操作的时间复杂度为O(1), union操作的时间复杂度为O(n)
+假设构建连通图的整数对有n个，查询连通图的整数对有n个，那么，整个过程的时间复杂度是：$n*(O(1)&#43;O(n))&#43;n*(O(1))=O(n^2)$
+对于特别大的节点数量来说，这种复杂度是不可接受的。
+quick-union算法 在quick-find算法中，瓶颈在于union操作，每次合并连通分量时都需要遍历整个数组，为了减少遍历和修改的次数，我们重新定义id数组，每个节点所对应的id值都是该连通分量内另一个节点的名称，即id对应链接，如果一个节点的链接指向自己，那么该节点作为该连通分量的根节点，代表了该连通分量，一个连通分量内的全部节点实际上通过这种链接形成了一棵树。
+由上，在find操作时，我们不断沿着节点的链接上溯，直到找到该连通分量的根节点，union操作时，我们首先调用find函数得到两个连通分量的根节点，然后将其中一个根节点指向另一个根节点即可。
+设连通分量对应树的深度为d，则find操作的时间复杂度为O(d)，union操作的时间复杂度为O(d)
+由于在合并连通分量时任意选择一个根节点指向另一个根节点，因此树的最大深度为n，在最坏情况下，find操作的时间复杂度为O(n)，union操作的时间复杂度也是O(n)
+加权quick-union算法 在quick-union算法中，find和union操作的时间复杂度依赖于连通分量树的深度。为了控制树的最大深度，我们可以控制合并时的操作：总是让节点数少的树连接到节点数多的树上。增加新的数据结构sz数组记录每个连通分量的节点数目，在合并操作时，总是让节点数目大的根节点作为父节点，而另一个少的根节点作为子节点，以此控制数的最大深度。
+可以证明，这种情况下树的最大深度为$log(n)$
+由上，find操作的时间复杂度为O(logn)，union操作的时间复杂度为O(logn)，总时间复杂度为O(nlogn)
+合并两个连通分量时，除了采用节点数目作为控制的权，我们也可以直接采用树的深度作为权。即在合并时，将深度小的树连接到深度大的树，如果深度相等，则任意连接，并将父节点的深度加一，可以证明，这种方式下树的最大深度也是logn
+本人之见，两种加权方式（数量权和深度权）的区别在于
+union操作时，数量权每次都要改变，而深度权只有在两个深度相同时才需要改变 两种加权方式虽然都能保证树的最大深度不超过logn，但是数量权可以保证更多的节点处在更接近根节点的位置 带路径压缩的加权quick-union算法 加权quick-union算法可以确保树的深度不超过logn，但我们也可以采取某种方式进一步压缩树的深度：find操作时路径压缩。
+在执行find操作时，我们以往只是从节点不断上溯，直到找到根节点，上溯的步数为该节点所在的深度$d&amp;rsquo;$，赋值操作的数量也是$d&amp;rsquo;$，我们可以采取一种折半压缩的方式，每次上溯时，把节点的父节点修改为节点的祖父节点，然后从祖父节点继续上溯，这种方式下，树的深度会减少$d&amp;rsquo;/2$，而上溯的步数也变为$d&amp;rsquo;/2$，总赋值操作的数量为$2*d&amp;rsquo;/2=d&#39;$
+由上，此时find操作的时间复杂度非常接近O(1)，union操作的时间复杂度也非常接近O(1)，总时间复杂度非常接近O(n)
+所有union-find算法的性能如下：
+带路径压缩的加(深度)权quick-union算法的C&#43;&#43;实现 1class UF 2{ 3private: 4	vector&amp;lt;int&amp;gt; parent; 5	vector&amp;lt;int&amp;gt; rank; 6	int count; 7public: 8	UF(int N) 9	{ 10	count = N; 11	for (int i = 0; i &amp;lt; N; &#43;&#43;i) 12	{ 13	parent." />
+  <meta property="og:locale" content="zh-cn" /><meta property="og:image" content="/img/b3.ico" />
+  
+
+  <link rel="stylesheet" href="/css/index.css">
+  <link rel="stylesheet" href="/css/flexboxgrid-6.3.1.min.css">
+
+  
+
+  <link href="/index.xml" rel="alternate" type="application/rss+xml"
+    title="Bryce&#39;s Log">
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/iconfont.css">
+
+  
+  
+
+  
+  <link rel="stylesheet" href="/css/katex.min.css">
+<script defer src="/js/katex.min.js"></script>
+<script defer src="/js/auto-render.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+              {left: '$$', right: '$$', display: true},
+              {left: '$', right: '$', display: false},
+              {left: '\\(', right: '\\)', display: false},
+              {left: '\\[', right: '\\]', display: true}
+          ],
+          
+          throwOnError : false
+        });
+    });
+</script>
+  
+</head>
+
+
+<body>
+  <article class="post " id="article">
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="site-header">
+          
+<header>
+  <div class="header-title">
+    <a href="/"
+      >Bryce&#39;s Log</a
+    >
+  </div>
+  <div class="header-subtitle">Log techlogic, Log life</div>
+</header>
+<div class="row end-md center-xs header-items">
+  
+  <div class="header-item">
+    <a href="/categories/tech/"><strong>Tech</strong></a>
+  </div>
+  
+  <div class="header-item">
+    <a href="/categories/life/"><strong>Life</strong></a>
+  </div>
+  <div class="header-item">
+    <div id="search-button">
+      <a class="site-page social-icon search" data-pjax-state="external">
+        <i class="iconfont icon-sousuo1"></i> 
+      </a>
+    </div>
+  </div>
+  
+</div><div id="local-search">
+    <div class="search-dialog">
+        <nav class="search-nav">
+            <span class="search-dialog-title">搜索</span>
+            <span id="loading-status"></span>
+            <button class="search-close-button">
+                <i class="iconfont icon-quxiao4"></i>
+            </button>
+        </nav>
+        <div class="is-center" id="loading-database">
+            <i class="fas fa-spinner fa-pulse"></i>
+            <span>数据库载入中</span>
+        </div>
+        <div class="search-wrap">
+            <div id="local-search-input">
+                <div class="local-search-box">
+                    <input class="local-search-box--input" placeholder="请输入关键词" type="text">
+                </div>
+            </div>
+            <hr>
+            <div id="local-search-results">
+            </div>
+        </div>
+    </div>
+    <div id="search-mask"></div>
+</div>
+
+<div id="login">
+    <div class="login-box">
+        <nav class="login-nav">
+            <span class="login-title">LOGIN</span>
+            <span id="loading-status"></span>
+            <button class="login-close-button">
+                <i class="iconfont icon-quxiao4"></i>
+            </button>
+        </nav>
+		<div class="item">
+			<input type="text" id="user" required>
+			<label for="">USER</label>
+		</div>
+		<div class="item">
+			<input type="password" id="password" required>
+			<label for="">PASSWORD</label>
+		</div>
+		<button class="btn" id="login-submit">submit
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>
+    </div>
+    <div id="login-mask">
+    </div>
+</div>
+<div class="row end-xs">
+   
+</div>
+<div class="header-line"></div>
+
+        </div>
+        <header class="post-header">
+          <h1 class="post-title">你好，Hugo</h1>
+          
+          <div class="row post-desc">
+            <div class="col-xs-6">
+              
+              <time class="post-date" datetime="2022-10-26 14:30:57 CST">
+                2022年10月26日
+              </time>
+              
+            </div>
+            <div class="col-xs-6">
+              
+              <div class="post-author">
+                <a target="_blank" href="https://brycerd.github.io/">@Bryce</a>
+              </div>
+              
+            </div>
+          </div>
+          
+        </header>
+
+        <div class="post-content markdown-body">
+          
+          
+          <h2 id="问题">问题</h2>
+<p>
+<img style="display:none;" src="" alt="image-20221104123608015" title="" mask=true data-mask="7505da916946b64b06dca948eef65e06e93ae00ade01aa9657c217cd1c2387e4b84f86ef1bc6118d6fe281e2f9f3737209d4b8c4a17ee10fcb71d7d36146e95166a7bd9f3327613e1550e7a4ca92c1015d6279370813cba6beb7e2ca5ccb4edc b54652ed97a4cb0abc591ee9af7287c8809ce6c6f4c023bd49928f6151f7c293e53bd61db350a01d2ff77db4fbca2ab6cb05d638782027bdd02caffb75da89c1fa6a94b8d4bc3a38d3aac836813bf8feff79c212cd4cdadf0ebacd0fb7acd6ca" data-sign="1bc666b7f134a12b7dbac2de33ccad3121062a09 83353d597cbad458989f2b1a5c1fa1f9f665c858" data-expire="1672329600000 1703088740000" data-algo="AES" data-cookie="oss"/>
+</p>
+<p>public bucket：</p>
+<p>
+<img style="display:none;" src="" alt="image-20221101212820626" title="" mask=true data-mask="7505da916946b64b06dca948eef65e06e93ae00ade01aa9657c217cd1c2387e4b84f86ef1bc6118d6fe281e2f9f37372681c3caadef0b75edc1e99a6c7a8f0f816a1ba478f90aaf4db4d48893ce8e1ad b54652ed97a4cb0abc591ee9af7287c8809ce6c6f4c023bd49928f6151f7c293e53bd61db350a01d2ff77db4fbca2ab6c0e0bef628d1a526c9588ab74eb3207c069b2599515425f8f469b36e859bd0cf" data-sign="1bc666b7f134a12b7dbac2de33ccad3121062a09 83353d597cbad458989f2b1a5c1fa1f9f665c858" data-expire="1672329600000 1703088740000" data-algo="AES" data-cookie="oss"/>
+</p>
+<p>private bucket：</p>
+<p>
+<img style="display:none;" src="" alt="image-2022110121281252" title="" mask=true data-mask="7505da916946b64b06dca948eef65e06ac14663873a2ad15bece163cc8b7aae1bb6fe04ad01602d67ea0e0a1f8fa424d04798112e0a765e4982165e2944d65ca4c413adaddd8ddda9804da96781dc0719ca0e06eb6011216a4ef084718a116009f388c0c4ec655b7bc2097b0cd66e232d8efff7194bc980be66bd1ae0270ee760a62efe283dbd5bf22f01f3c8375e484b939c1ee36ac04f3f696dfecd94a077f3c5ffe88d98e378bc77525296417cb78e3f6cc9051d788535633a4cd54ae5ce2411dfbcf1059558714cf73b04d0069b02f9cbf7b7fabc7f619afeb6ec7cfae81b4ea312689dca0ad7d0d318eccd9e42be48d1c8aaad52cb78a1d534dd1065e08 b54652ed97a4cb0abc591ee9af7287c862afac913d28d59057d1ac10d165c71ae8ed1d4616d79e837898f929912cd3b452f9f39747467902cbbc978422a9802641093ddfc80918cab1cdba1831765fe0e7b2a49adc4aab9b01d1892f03db92fb6605476267b68223cbf632b53306ddb9f115006aaead6cab8c42c66455c35a9ff9fe53f75b37488dab320e5ab32d28f701bfb9952eadefcae2b1a9d24e067d646315586ae19117fbfa9bfdc84d813424f4a78077726a6f76d43ac379f0e7c25bc110240c9963c7523b07b24b2e3a8e84a4cccc50771771bdf723fac075457897ef3ddbe180f0314d0385dfc0899e4765ea2c8f90dec03add6145a0cfafd34432" data-sign="1bc666b7f134a12b7dbac2de33ccad3121062a09 83353d597cbad458989f2b1a5c1fa1f9f665c858" data-expire="1672329600000 1703088740000" data-algo="AES" data-cookie="oss"/>
+</p>
+<p>假定输入一列整数对，其中每个整数都代表一个某种类型的对象，一对整数p和q可以被理解为：p和q是相连的，并且<strong>相连</strong>是一种等价关系，即满足自反性、对称性和传递性。等价关系将对象分为多个等价类，则问题是我们如何快速的对输入的新整数对进行判断：该整数对是否位于同一等价类，以及等价类的数目？</p>
+<p>test picgo：</p>
+<p>
+<img style="display:none;" src="" alt="8492397" title="" mask=true data-mask="7505da916946b64b06dca948eef65e06e93ae00ade01aa9657c217cd1c2387e4b84f86ef1bc6118d6fe281e2f9f373720001c60d7042022162e745b4a9dbf1a8b3e60d529a928557785f4b997c17dc31 b54652ed97a4cb0abc591ee9af7287c8809ce6c6f4c023bd49928f6151f7c293e53bd61db350a01d2ff77db4fbca2ab6c844849ed48cf242ad3e7b70a0a9021f2ca9d80928313e23d65f240531eeb1ab" data-sign="1bc666b7f134a12b7dbac2de33ccad3121062a09 83353d597cbad458989f2b1a5c1fa1f9f665c858" data-expire="1672329600000 1703088740000" data-algo="AES" data-cookie="oss"/>
+</p>
+<p>将这个问题转化到无向图中，将每个整数对应图中的一个节点，相连关系对应两个节点的一条边，则一个等价类就对应图中的一个<strong>连通分量</strong>，即图的一个极大连通子图，该子图内任意两个节点都能直接或间接相连，那么问题是如何快速判断两个节点是否位于一个连通分量中，以及连通分量的数目？</p>
+<h2 id="api">API</h2>
+<p>将该问题抽象为一个数据结构类UF，其API设计如下</p>
+<p>
+<img style="display:none;" src="" alt="算法API" title="" mask=true data-mask="b1116aa02dd90cc8dcece1229b0cbc1fc92791c0a8c9ad45878e75e0a366144bca7b0a84a6b73c70fe81e31df0e4be0fabe02844e6295a3993b78f02ff6a28945f8407e6f47a3ad1103f61ded72ab6d4 9b013ebf9b9ce8180ea277604561ffcdbd29f1d0c906b308bb9cdf5d21a4846d1bea0e580d2f475ebdb9cbf0d861a20a37d4169c9ba574203043b0127125aace3d76023275e96944858f0c824ef8de51" data-sign="1bc666b7f134a12b7dbac2de33ccad3121062a09 83353d597cbad458989f2b1a5c1fa1f9f665c858" data-expire="1672329600000 1703088740000" data-algo="AES" data-cookie="oss"/>
+</p>
+<p>如上，我们需要定义一种数据结构表示已有的连接，基于该数据结构实现高效的union find等算法，我们可以使用一个<code>id</code>数组作为基本数据结构，使用节点标号作为索引，而<code>id</code>值则表示该节点所属的连通分量</p>
+<h2 id="quick-find算法">quick-find算法</h2>
+<p>直观上，我们可以通过保证当且仅当<code>id[p]</code>等于<code>id[q]</code>时，p和q是连通的，即同一个连通分量的所有节点的id值相同。这是一种quick-find的算法，因为我们只需要访问id数组一次就可以得到节点所在的连通分量标号，但是对于union操作来说，我们在合并两个连通分量P和Q时，必须遍历整个id数组，把其中指向P的节点改为指向Q，这是一个线性时间的操作</p>
+<p>由上，我们可以得到find操作的时间复杂度为O(1), union操作的时间复杂度为O(n)</p>
+<p>假设构建连通图的整数对有n个，查询连通图的整数对有n个，那么，整个过程的时间复杂度是：$n*(O(1)+O(n))+n*(O(1))=O(n^2)$</p>
+<p>对于特别大的节点数量来说，这种复杂度是不可接受的。</p>
+<h2 id="quick-union算法">quick-union算法</h2>
+<p>在quick-find算法中，瓶颈在于union操作，每次合并连通分量时都需要遍历整个数组，为了减少遍历和修改的次数，我们重新定义id数组，每个节点所对应的id值都是该连通分量内另一个节点的名称，即id对应<strong>链接</strong>，如果一个节点的链接指向自己，那么该节点作为该连通分量的根节点，代表了该连通分量，一个连通分量内的全部节点实际上通过这种链接形成了一棵树。</p>
+<p>由上，在find操作时，我们不断沿着节点的链接上溯，直到找到该连通分量的根节点，union操作时，我们首先调用find函数得到两个连通分量的根节点，然后将其中一个根节点指向另一个根节点即可。</p>
+<p>设连通分量对应树的深度为d，则find操作的时间复杂度为O(d)，union操作的时间复杂度为O(d)</p>
+<p>由于在合并连通分量时任意选择一个根节点指向另一个根节点，因此树的最大深度为n，在最坏情况下，find操作的时间复杂度为O(n)，union操作的时间复杂度也是O(n)</p>
+<h2 id="加权quick-union算法">加权quick-union算法</h2>
+<p>在quick-union算法中，find和union操作的时间复杂度依赖于连通分量树的深度。为了控制树的最大深度，我们可以控制合并时的操作：总是让节点数少的树连接到节点数多的树上。增加新的数据结构sz数组记录每个连通分量的节点数目，在合并操作时，总是让节点数目大的根节点作为父节点，而另一个少的根节点作为子节点，以此控制数的最大深度。</p>
+<p>可以证明，这种情况下树的最大深度为$log(n)$</p>
+<p>由上，find操作的时间复杂度为O(logn)，union操作的时间复杂度为O(logn)，总时间复杂度为O(nlogn)</p>
+<p>合并两个连通分量时，除了采用节点数目作为控制的<strong>权</strong>，我们也可以直接采用树的深度作为权。即在合并时，将深度小的树连接到深度大的树，如果深度相等，则任意连接，并将父节点的深度加一，可以证明，这种方式下树的最大深度也是logn</p>
+<p>本人之见，两种加权方式（数量权和深度权）的区别在于</p>
+<ul>
+<li>union操作时，数量权每次都要改变，而深度权只有在两个深度相同时才需要改变</li>
+<li>两种加权方式虽然都能保证树的最大深度不超过logn，但是数量权可以保证更多的节点处在更接近根节点的位置</li>
+</ul>
+<h2 id="带路径压缩的加权quick-union算法">带路径压缩的加权quick-union算法</h2>
+<p>加权quick-union算法可以确保树的深度不超过logn，但我们也可以采取某种方式进一步压缩树的深度：find操作时路径压缩。</p>
+<p>在执行find操作时，我们以往只是从节点不断上溯，直到找到根节点，上溯的步数为该节点所在的深度$d&rsquo;$，赋值操作的数量也是$d&rsquo;$，我们可以采取一种折半压缩的方式，每次上溯时，把节点的父节点修改为节点的祖父节点，然后从祖父节点继续上溯，这种方式下，树的深度会减少$d&rsquo;/2$，而上溯的步数也变为$d&rsquo;/2$，总赋值操作的数量为$2*d&rsquo;/2=d'$</p>
+<p>由上，此时find操作的时间复杂度非常接近O(1)，union操作的时间复杂度也非常接近O(1)，总时间复杂度非常接近O(n)</p>
+<p>所有union-find算法的性能如下：</p>
+<p>
+<img style="display:none;" src="" alt="算法性能" title="" mask=true data-mask="b1116aa02dd90cc8dcece1229b0cbc1fc92791c0a8c9ad45878e75e0a366144bca7b0a84a6b73c70fe81e31df0e4be0fbff913858bab93abd35ea91642073fce73d46430152f0f72c2554011ddf88800 9b013ebf9b9ce8180ea277604561ffcdbd29f1d0c906b308bb9cdf5d21a4846d1bea0e580d2f475ebdb9cbf0d861a20a6eac1d3798d3898fe2afae0729770b441771dafc08836620d1b947c0d048ab92" data-sign="1bc666b7f134a12b7dbac2de33ccad3121062a09 83353d597cbad458989f2b1a5c1fa1f9f665c858" data-expire="1672329600000 1703088740000" data-algo="AES" data-cookie="oss"/>
+</p>
+<h2 id="带路径压缩的加深度权quick-union算法的c实现">带路径压缩的加(深度)权quick-union算法的C++实现</h2>
+<div class="highlight"><pre tabindex="0" style="background-color:#fff;"><code class="language-c++" data-lang="c++"><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1</span><span><span style="color:#080;font-weight:bold">class</span> <span style="color:#b06;font-weight:bold">UF</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2</span><span>{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3</span><span><span style="color:#080;font-weight:bold">private</span><span style="color:#333">:</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4</span><span>	vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;</span> parent;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5</span><span>	vector<span style="color:#333">&lt;</span><span style="color:#339;font-weight:bold">int</span><span style="color:#333">&gt;</span> rank;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6</span><span>	<span style="color:#339;font-weight:bold">int</span> count;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7</span><span><span style="color:#080;font-weight:bold">public</span><span style="color:#333">:</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8</span><span>	UF(<span style="color:#339;font-weight:bold">int</span> N)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10</span><span>		count <span style="color:#333">=</span> N;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11</span><span>		<span style="color:#080;font-weight:bold">for</span> (<span style="color:#339;font-weight:bold">int</span> i <span style="color:#333">=</span> <span style="color:#00d;font-weight:bold">0</span>; i <span style="color:#333">&lt;</span> N; <span style="color:#333">++</span>i)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12</span><span>		{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13</span><span>			parent.push_back(i);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14</span><span>			rank.push_back(<span style="color:#00d;font-weight:bold">1</span>);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15</span><span>		}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17</span><span>	<span style="color:#339;font-weight:bold">int</span> <span style="color:#06b;font-weight:bold">getCount</span>()
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19</span><span>		<span style="color:#080;font-weight:bold">return</span> count;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21</span><span>	<span style="color:#339;font-weight:bold">int</span> <span style="color:#06b;font-weight:bold">find</span>(<span style="color:#339;font-weight:bold">int</span> p)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23</span><span>		<span style="color:#080;font-weight:bold">while</span> (p <span style="color:#333">!=</span> parent[p])
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24</span><span>		{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25</span><span>			parent[p] <span style="color:#333">=</span> parent[parent[p]];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26</span><span>			p <span style="color:#333">=</span> parent[p];
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27</span><span>		}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28</span><span>		<span style="color:#080;font-weight:bold">return</span> p;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30</span><span>	<span style="color:#339;font-weight:bold">void</span> <span style="color:#06b;font-weight:bold">unionPQ</span>(<span style="color:#339;font-weight:bold">int</span> p, <span style="color:#339;font-weight:bold">int</span> q)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32</span><span>		<span style="color:#339;font-weight:bold">int</span> pRoot <span style="color:#333">=</span> find(p);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33</span><span>		<span style="color:#339;font-weight:bold">int</span> qRoot <span style="color:#333">=</span> find(q);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34</span><span>		<span style="color:#080;font-weight:bold">if</span> (pRoot <span style="color:#333">==</span> qRoot) <span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35</span><span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36</span><span>		<span style="color:#080;font-weight:bold">if</span> (rank[pRoot] <span style="color:#333">&lt;</span> rank[qRoot]) id[pRoot] <span style="color:#333">=</span> qRoot;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37</span><span>		<span style="color:#080;font-weight:bold">else</span> <span style="color:#080;font-weight:bold">if</span> (rank[pRoot] <span style="color:#333">&gt;</span> rank[qRoot]) id[qRoot] <span style="color:#333">=</span> pRoot;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38</span><span>		<span style="color:#080;font-weight:bold">else</span>
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39</span><span>		{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40</span><span>			id[pRoot] <span style="color:#333">=</span> qRoot;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41</span><span>			rank[qRoot] <span style="color:#333">+=</span> <span style="color:#00d;font-weight:bold">1</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42</span><span>		}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43</span><span>		<span style="color:#333">--</span>count;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44</span><span>		<span style="color:#080;font-weight:bold">return</span>;
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46</span><span>	<span style="color:#339;font-weight:bold">bool</span> <span style="color:#06b;font-weight:bold">connected</span>(<span style="color:#339;font-weight:bold">int</span> p, <span style="color:#339;font-weight:bold">int</span> q)
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47</span><span>	{
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48</span><span>		<span style="color:#080;font-weight:bold">return</span> find(p) <span style="color:#333">==</span> find(q);
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49</span><span>	}
+</span></span><span style="display:flex;"><span style="white-space:pre;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50</span><span>};
+</span></span></code></pre></div>
+          
+        </div>
+
+        <div class="row middle-xs">
+          <div class="col-xs-12">
+            
+            <div class="post-tags">
+              <a href="/tags/%E6%8E%92%E5%BA%8F/">
+                排序
+              </a>
+            </div>
+            
+            <div class="post-tags">
+              <a href="/tags/%E5%B9%B6%E6%9F%A5%E9%9B%86/">
+                并查集
+              </a>
+            </div>
+            
+          </div>
+        </div>
+        
+          <div class="row">
+            <div class="col-xs-12">
+              
+            </div>
+          </div>
+
+          
+
+
+
+          
+          
+          <div style="height: 50px;"></div>
+          
+        
+
+        <div class="site-footer">
+
+</div>
+
+      </div>
+    </div>
+  </article>
+
+  
+
+
+<script src="/js/jquery.slim.min.js"></script>
+<script src="/js/jquery.cookie-1.4.1.min.js"></script>
+<script src="/js/pjax.min.js"></script>
+
+<script src="/js/util.js"></script>
+
+<script src="/js/crypto-js.min.js"></script>
+<script src="/js/mask.js"></script>
+
+<script src="/js/localsearch.js"></script>
+  
+
+</body>
+
+</html>

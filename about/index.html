@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  
+  <title>About Me - Bryce&#39;s Log</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="[]">
+  <meta name="author" content="Bryce">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e0e0e0">
+  <meta name="msapplication-navbutton-color" content="#e0e0e0">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#e0e0e0">
+
+  <link rel="icon" href="/img/b.ico">
+  <link rel="stylesheet" href="/libs/twitter-bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="stylesheet" href="/css/iconfont.css">
+
+  <script src="/libs/jquery/jquery.min.js"></script>
+  <script src="/libs/jquery-cookie/jquery.cookie-1.4.1.min.js"></script>
+  <script src="/libs/twitter-bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+
+<div class="wrap">
+  <nav class="page-navigation">
+    <div class="nav-container">
+        <div class="page-header-logo">
+            <h1 class="prince-log">
+                <a href="/" class="home-link">Bryce&#39;s Log</a>
+            </h1>
+        </div>
+        <button type="button" data-toggle="collapse" data-target=".main-nav-items" class="navbar-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <ul class="collapse navbar-collapse main-nav-items">
+            <li class="menu-item">
+                <a href="/" target="_self">主页</a>
+            </li>
+            <li class="menu-item">
+                <a href="/categories/%e6%8a%80%e6%9c%af/" target="_self">技术</a>
+            </li>
+            <li class="menu-item">
+                <a href="/categories/%e7%94%9f%e6%b4%bb/" target="_self">生活</a>
+            </li>
+            <li class="menu-item">
+                <a href="/categories/%e9%9a%8f%e7%ac%94/" target="_self">随笔</a>
+            </li>
+            <li class="menu-item">
+                <a href="/about/" target="_self">关于</a>
+            </li><li class="menu-item">
+                <div id="search-button">
+                    <a class="site-page social-icon search" data-pjax-state="external">
+                        <i class="iconfont icon-sousuo5"></i> 
+                    </a>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+</nav>
+  <main class="hiruko-container"><div class="archive col-md-8 col-xs-12">
+  <div class="post">
+    <article class="post-block">
+        <h1 class="post-title">About Me</h1>
+        <div class="post-info">Nov 20 2022</div>
+        <div class="post-entry"><h1 id="blog">BLog</h1>
+<ul>
+<li>一个简单的个人网站，记录技术知识、记录个人生活</li>
+</ul>
+<h1 id="bryce">Bryce</h1>
+<ul>
+<li>普通学生一位，目前（2022）研三在读，明年工作</li>
+<li>努力学习，好好工作</li>
+</ul>
+</div>
+    </article>
+  </div>
+</div>
+<aside class="sidebar col-md-4 col-xs-12">
+  <div class="aboutme widget">
+    <div class="about-me-image" style="background-image: url('https://bryce-image-public.oss-cn-beijing.aliyuncs.com/blog/img/202211201903544.jpg');"></div>
+    <p class="about-me-text">沉淀技术 热爱生活 保持思考</p>
+  </div>
+  <div class="follow-me widget">
+    <h3 class="aside-title">FOLLOW ME</h3>
+    <div class="follow-icons">
+      <a href="https://github.com/brycerd" target="_blank" class="github-link"></a>
+    </div>
+  </div>
+</aside>
+    </main>
+</div>
+
+
+  <div id="local-search">
+    <div class="search-dialog">
+        <div class="search-nav">
+            <span class="search-dialog-title">搜索</span>
+            <span id="loading-status"></span>
+            <button class="search-close-button">
+                <i class="iconfont icon-quxiao4"></i>
+            </button>
+        </div>
+        <div class="is-center" id="loading-database">
+            <i class="fas fa-spinner fa-pulse"></i>
+            <span>数据库载入中</span>
+        </div>
+        <div class="search-wrap">
+            <div id="local-search-input">
+                <div class="local-search-box">
+                    <input class="local-search-box--input" placeholder="请输入关键词" type="text">
+                </div>
+            </div>
+            <hr>
+            <div id="local-search-results">
+            </div>
+        </div>
+    </div>
+    <div id="search-mask"></div>
+</div>
+
+
+<div id="login">
+    <div class="login-box">
+        <p class="login-nav">
+            <span class="login-title">LOGIN</span>
+            <span id="loading-status"></span>
+            <button class="login-close-button">
+                <i class="iconfont icon-quxiao4"></i>
+            </button>
+        </p>
+		<div class="item">
+			<input type="text" id="user" required>
+			<label for="">USER</label>
+		</div>
+		<div class="item">
+			<input type="password" id="password" required>
+			<label for="">PASSWORD</label>
+		</div>
+		<button class="btn" id="login-submit">submit
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>
+    </div>
+    <div id="login-mask">
+    </div>
+</div>
+<footer>
+  <div class="copyright">
+    <p id="copyright">Copyright © &nbsp;Bryce&nbsp;2022 - 2023&nbsp;
+    </p>
+    <p>
+      Powered by
+      <a href="https://gohugo.io/" target="_blank">Hugo</a>&nbsp;&
+      <a href="https://github.com/GenkunAbe/hugo-theme-hiruko" target="_blank">Hiruko</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function (u, c) {
+    var d = document, t = 'script', o = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(e); }); }
+    s.parentNode.insertBefore(o, s);
+})("/libs/pangu/pangu.min.js", function () {
+    pangu.spacingPage();
+});
+</script>
+
+<script src="/js/util.js"></script>
+<script src="/js/crypto-js.min.js"></script>
+<script src="/js/mask.js"></script>
+
+<script src="/js/localsearch.js"></script></body>
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>架构 on Bryce&#39;s Log</title>
+    <link>https://brycerd.github.io/tags/%E6%9E%B6%E6%9E%84/</link>
+    <description>Recent content in 架构 on Bryce&#39;s Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 01 Oct 2022 10:00:00 +0800</lastBuildDate><atom:link href="https://brycerd.github.io/tags/%E6%9E%B6%E6%9E%84/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>程序架构设计基础</title>
+      <link>https://brycerd.github.io/posts/%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%9F%BA%E7%A1%80/</link>
+      <pubDate>Sat, 01 Oct 2022 10:00:00 +0800</pubDate>
+      
+      <guid>https://brycerd.github.io/posts/%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1%E5%9F%BA%E7%A1%80/</guid>
+      <description>&lt;p&gt;在计算机科学中，架构指软件系统的顶层结构，描述了系统内包含的子系统、模块、组件等个体，以及个体的分工、协作、运转机制。本文介绍了架构的概念、背景，详细阐述了架构设计的基本原则、设计流程和架构模式。&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

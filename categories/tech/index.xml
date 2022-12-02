@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tech on Bryce&#39;s Log</title>
+    <link>https://brycerd.github.io/categories/tech/</link>
+    <description>Recent content in Tech on Bryce&#39;s Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 26 Oct 2022 14:30:57 +0800</lastBuildDate><atom:link href="https://brycerd.github.io/categories/tech/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>你好，Hugo</title>
+      <link>https://brycerd.github.io/posts/hello/</link>
+      <pubDate>Wed, 26 Oct 2022 14:30:57 +0800</pubDate>
+      
+      <guid>https://brycerd.github.io/posts/hello/</guid>
+      <description>问题 public bucket：
+private bucket：
+假定输入一列整数对，其中每个整数都代表一个某种类型的对象，一对整数p和q可以被理解为：p和q是相连的，并且相连是一种等价关系，即满足自反性、对称性和传递性。等价关系将对象分为多个等价类，则问题是我们如何快速的对输入的新整数对进行判断：该整数对是否位于同一等价类，以及等价类的数目？
+test picgo：
+将这个问题转化到无向图中，将每个整数对应图中的一个节点，相连关系对应两个节点的一条边，则一个等价类就对应图中的一个连通分量，即图的一个极大连通子图，该子图内任意两个节点都能直接或间接相连，那么问题是如何快速判断两个节点是否位于一个连通分量中，以及连通分量的数目？
+API 将该问题抽象为一个数据结构类UF，其API设计如下
+如上，我们需要定义一种数据结构表示已有的连接，基于该数据结构实现高效的union find等算法，我们可以使用一个id数组作为基本数据结构，使用节点标号作为索引，而id值则表示该节点所属的连通分量
+quick-find算法 直观上，我们可以通过保证当且仅当id[p]等于id[q]时，p和q是连通的，即同一个连通分量的所有节点的id值相同。这是一种quick-find的算法，因为我们只需要访问id数组一次就可以得到节点所在的连通分量标号，但是对于union操作来说，我们在合并两个连通分量P和Q时，必须遍历整个id数组，把其中指向P的节点改为指向Q，这是一个线性时间的操作
+由上，我们可以得到find操作的时间复杂度为O(1), union操作的时间复杂度为O(n)
+假设构建连通图的整数对有n个，查询连通图的整数对有n个，那么，整个过程的时间复杂度是：$n*(O(1)+O(n))+n*(O(1))=O(n^2)$
+对于特别大的节点数量来说，这种复杂度是不可接受的。
+quick-union算法 在quick-find算法中，瓶颈在于union操作，每次合并连通分量时都需要遍历整个数组，为了减少遍历和修改的次数，我们重新定义id数组，每个节点所对应的id值都是该连通分量内另一个节点的名称，即id对应链接，如果一个节点的链接指向自己，那么该节点作为该连通分量的根节点，代表了该连通分量，一个连通分量内的全部节点实际上通过这种链接形成了一棵树。
+由上，在find操作时，我们不断沿着节点的链接上溯，直到找到该连通分量的根节点，union操作时，我们首先调用find函数得到两个连通分量的根节点，然后将其中一个根节点指向另一个根节点即可。
+设连通分量对应树的深度为d，则find操作的时间复杂度为O(d)，union操作的时间复杂度为O(d)
+由于在合并连通分量时任意选择一个根节点指向另一个根节点，因此树的最大深度为n，在最坏情况下，find操作的时间复杂度为O(n)，union操作的时间复杂度也是O(n)
+加权quick-union算法 在quick-union算法中，find和union操作的时间复杂度依赖于连通分量树的深度。为了控制树的最大深度，我们可以控制合并时的操作：总是让节点数少的树连接到节点数多的树上。增加新的数据结构sz数组记录每个连通分量的节点数目，在合并操作时，总是让节点数目大的根节点作为父节点，而另一个少的根节点作为子节点，以此控制数的最大深度。
+可以证明，这种情况下树的最大深度为$log(n)$
+由上，find操作的时间复杂度为O(logn)，union操作的时间复杂度为O(logn)，总时间复杂度为O(nlogn)
+合并两个连通分量时，除了采用节点数目作为控制的权，我们也可以直接采用树的深度作为权。即在合并时，将深度小的树连接到深度大的树，如果深度相等，则任意连接，并将父节点的深度加一，可以证明，这种方式下树的最大深度也是logn
+本人之见，两种加权方式（数量权和深度权）的区别在于
+union操作时，数量权每次都要改变，而深度权只有在两个深度相同时才需要改变 两种加权方式虽然都能保证树的最大深度不超过logn，但是数量权可以保证更多的节点处在更接近根节点的位置 带路径压缩的加权quick-union算法 加权quick-union算法可以确保树的深度不超过logn，但我们也可以采取某种方式进一步压缩树的深度：find操作时路径压缩。
+在执行find操作时，我们以往只是从节点不断上溯，直到找到根节点，上溯的步数为该节点所在的深度$d&amp;rsquo;$，赋值操作的数量也是$d&amp;rsquo;$，我们可以采取一种折半压缩的方式，每次上溯时，把节点的父节点修改为节点的祖父节点，然后从祖父节点继续上溯，这种方式下，树的深度会减少$d&amp;rsquo;/2$，而上溯的步数也变为$d&amp;rsquo;/2$，总赋值操作的数量为$2*d&amp;rsquo;/2=d&#39;$
+由上，此时find操作的时间复杂度非常接近O(1)，union操作的时间复杂度也非常接近O(1)，总时间复杂度非常接近O(n)
+所有union-find算法的性能如下：
+带路径压缩的加(深度)权quick-union算法的C++实现 1class UF 2{ 3private: 4	vector&amp;lt;int&amp;gt; parent; 5	vector&amp;lt;int&amp;gt; rank; 6	int count; 7public: 8	UF(int N) 9	{ 10	count = N; 11	for (int i = 0; i &amp;lt; N; ++i) 12	{ 13	parent.</description>
+    </item>
+    
+  </channel>
+</rss>

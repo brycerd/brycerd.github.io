@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>优先队列 on Bryce&#39;s Log</title>
+    <link>https://brycerd.github.io/tags/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/</link>
+    <description>Recent content in 优先队列 on Bryce&#39;s Log</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Wed, 26 Oct 2022 14:30:50 +0800</lastBuildDate><atom:link href="https://brycerd.github.io/tags/%E4%BC%98%E5%85%88%E9%98%9F%E5%88%97/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>排序算法</title>
+      <link>https://brycerd.github.io/posts/test/</link>
+      <pubDate>Wed, 26 Oct 2022 14:30:50 +0800</pubDate>
+      
+      <guid>https://brycerd.github.io/posts/test/</guid>
+      <description>排序是将一组对象按照某种逻辑顺序重新排列的过程。在计算时代早期，据估计有30%的计算周期都用在排序上，排序在商业数据处理和现在科学计算中都有着很重要的地位，能够应用于事务处理、组合优化、天体物理学、分子动力学、语言学、基因组学、天气预报和很多其他领域，快速排序甚至被誉为20世纪科学和工程领域的十大算法之一。本文主要参考由Robert Sedgewick、Kevin Wayne所著、谢路云所译的Algorithms(第4版)，将讨论比较排序算法的理论基础、若干算法和优先队列。
+初级排序算法 选择排序 选择排序算法采用如下逻辑进行排序：首先，找到数组中最小的元素，然后将它和数组中的第一个元素交换位置；再次，在剩下的元素中找到最小的元素，将它和数组的第二个元素交换位置，如此往复，直到将整个数组排序，选择排序的C++实现如下：
+1void selectSort(vector&amp;lt;int&amp;gt;&amp;amp; a) 2{ 3	int N = a.size(); 4	for (int i = 0; i &amp;lt; N; ++i) 5	{ 6	int minPos = i; 7	for (int j = i + 1; j &amp;lt; N; ++j) 8	if (a[j] &amp;lt; a[minPos]) minPos = j; 9	swap(a[i], a[minPos]); 10	} 11	return; 12} 选择排序具有如下的特点：
+运行时间和输入分布无关
+无论输入初始是什么状态，是否有序是否反序，选择排序的运行时间并无区别。无论输入为何，选择排序总要运行$(N-1)+(N-2)+&amp;hellip;+1=\frac{N(N-1)}{2}\sim\frac{N^2}{2}$次比较操作和N次交换操作
+元素移动次数是最少的
+如前所述，选择排序共进行N次交换操作，而之后可以看到，其他算法的元素移动次数都是$NlogN\space or\space N^2$级别的
+根据算法分析可知，选择排序要进行$\frac{N(N-1)}{2}$次的比较和N次的移动，总时间复杂度为$O(N^2)$，总空间复杂度为$\Theta(1)$
+插入排序 插入排序基于如下逻辑进行：将每个元素插入到已经排序的子序列中的适当位置。同时，为了给要插入的元素腾出空间，需要将其余所有元素都在插入之前向右移动一位，插入排序的C++实现如下所示：</description>
+    </item>
+    
+  </channel>
+</rss>

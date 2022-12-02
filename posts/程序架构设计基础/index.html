@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  
+  <title>程序架构设计基础 - Bryce&#39;s Log</title>
+  <meta name="description" content="程序架构设计基础">
+  <meta name="keywords" content="[]">
+  <meta name="author" content="Bryce">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e0e0e0">
+  <meta name="msapplication-navbutton-color" content="#e0e0e0">
+  <meta name="apple-mobile-web-app-status-bar-style" content="#e0e0e0">
+
+  <link rel="icon" href="/img/b.ico">
+  <link rel="stylesheet" href="/libs/twitter-bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/libs/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/libs/jqueryui/jquery-ui.min.css">
+  <link rel="stylesheet" href="/libs/jquery.tocify/stylesheets/jquery.tocify.min.css">
+  <link rel="stylesheet" href="/css/main.css">
+
+  <link rel="stylesheet" href="/css/iconfont.css">
+
+  <script src="/libs/jquery/jquery.min.js"></script>
+  <script src="/libs/jquery-cookie/jquery.cookie-1.4.1.min.js"></script>
+  <script src="/libs/twitter-bootstrap/js/bootstrap.min.js"></script>
+  <script src="/libs/jqueryui/jquery-ui.min.js"></script>
+  <script src="/libs/jquery.tocify/javascripts/jquery.tocify.min.js"></script>
+</head>
+<body>
+
+
+<div class="wrap">
+  <nav class="page-navigation">
+    <div class="nav-container">
+        <div class="page-header-logo">
+            <h1 class="prince-log">
+                <a href="/" class="home-link">Bryce&#39;s Log</a>
+            </h1>
+        </div>
+        <button type="button" data-toggle="collapse" data-target=".main-nav-items" class="navbar-toggle">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <ul class="collapse navbar-collapse main-nav-items">
+            <li class="menu-item">
+                <a href="/" target="_self">主页</a>
+            </li>
+            <li class="menu-item">
+                <a href="/categories/%e6%8a%80%e6%9c%af/" target="_self">技术</a>
+            </li>
+            <li class="menu-item">
+                <a href="/categories/%e7%94%9f%e6%b4%bb/" target="_self">生活</a>
+            </li>
+            <li class="menu-item">
+                <a href="/categories/%e9%9a%8f%e7%ac%94/" target="_self">随笔</a>
+            </li>
+            <li class="menu-item">
+                <a href="/about/" target="_self">关于</a>
+            </li><li class="menu-item">
+                <div id="search-button">
+                    <a class="site-page social-icon search" data-pjax-state="external">
+                        <i class="iconfont icon-sousuo5"></i> 
+                    </a>
+                </div>
+            </li>
+            
+        </ul>
+    </div>
+</nav>
+  <main class="hiruko-container"><div class="post">
+  <article class="post-block">
+    <h1 class="post-title">程序架构设计基础</h1>
+    <div class="post-info">Oct 1 2022</div>
+    <div class="post-entry" id="blog-content">
+      
+      
+      <p>在计算机科学中，架构指软件系统的顶层结构，描述了系统内包含的子系统、模块、组件等个体，以及个体的分工、协作、运转机制。本文介绍了架构的概念、背景，详细阐述了架构设计的基本原则、设计流程和架构模式。</p>
+<h3 id="概念"><strong>概念</strong></h3>
+<ul>
+<li>
+<p>系统：由一群有关联的个体组成，根据某种规则运作，能完成单个元件不能单独完成的工作的群体。</p>
+<ul>
+<li>关联：系统内各个体存在关联关系</li>
+<li>规则：系统内个体按照指定的规则分工、协作、运转</li>
+<li>能力：系统产生并提供新能力</li>
+</ul>
+</li>
+<li>
+<p>子系统：由若干个体组成的系统，同时是更大系统的一部分。</p>
+</li>
+<li>
+<p>模块：一套一致而互相有紧密关联的软件组织，通过接口表达模块提供的功能。</p>
+</li>
+<li>
+<p>组件：自包含的、可编程的、可重用的、与语言无关的软件单元。</p>
+<ul>
+<li>模块和组件都是系统的组成部分</li>
+<li>模块侧重于从逻辑上划分系统</li>
+<li>组件侧重于从物理上划分系统</li>
+</ul>
+</li>
+<li>
+<p>框架：为了实现某个业界标准或完成特定基本任务的软件组件规范，也指为了实现某个软件组件规范时，提供规范所要求的基础功能的软件产品。</p>
+</li>
+<li>
+<p>架构：软件系统的基础结构。</p>
+</li>
+</ul>
+<h3 id="架构"><strong>架构</strong></h3>
+<p>软件系统的顶层结构，描述了系统内包含的子系统、模块、组件等个体，以及个体的分工、协作、运转机制。</p>
+<h3 id="背景"><strong>背景</strong></h3>
+<h4 id="开发语言演进"><strong>开发语言演进</strong></h4>
+<h5 id="机器语言1940年之前"><strong>机器语言(1940年之前)</strong></h5>
+<ul>
+<li>
+<p>直接用二进制码表示机器可以识别的指令和数据</p>
+</li>
+<li>
+<p>问题：难以编写、难以阅读、难以修改</p>
+</li>
+</ul>
+<h5 id="汇编语言1940年代"><strong>汇编语言(1940年代)</strong></h5>
+<ul>
+<li>
+<p>用助记符代替机器指令，用地址符号或标号代替地址</p>
+</li>
+<li>
+<p>优势：解决了机器语言读写复杂的问题</p>
+</li>
+<li>
+<p>问题：难以编写复杂逻辑、难以移植</p>
+</li>
+</ul>
+<h5 id="高级语言1950年代"><strong>高级语言(1950年代)</strong></h5>
+<ul>
+<li>
+<p>参照数学语言设计、近似于人类日常语言的程序语言</p>
+</li>
+<li>
+<p>通过编译器将高级语言编译为适合不同ISA的机器语言</p>
+</li>
+<li>
+<p>优势：解决复杂逻辑开发问题和移植性问题</p>
+</li>
+<li>
+<p>问题：软件可维护性和可扩展性问题出现</p>
+</li>
+</ul>
+<h4 id="软件开发危机"><strong>软件开发危机</strong></h4>
+<h5 id="第一次软件危机1960-1970"><strong>第一次软件危机(1960-1970)</strong></h5>
+<ul>
+<li>
+<p>软件规模和复杂度增加，表现为软件质量低下、项目开发超支</p>
+</li>
+<li>
+<p>方案：软件工程、结构化程序设计</p>
+</li>
+<li>
+<p>结构化程序设计：抛弃goto语句，采取自顶向下、逐步细化、模块化的指导思想，将软件复杂度控制在一定范围内，本质上仍然是面向过程的设计思想</p>
+</li>
+</ul>
+<h5 id="第二次软件危机1980年代"><strong>第二次软件危机(1980年代)</strong></h5>
+<ul>
+<li>
+<p>软件难以扩展</p>
+</li>
+<li>
+<p>方案：面向对象程序设计</p>
+</li>
+<li>
+<p>面向对象程序设计：抽象、封装、继承、多态，增强软件的可扩展性</p>
+</li>
+</ul>
+<h5 id="软件架构1990年代"><strong>软件架构(1990年代)</strong></h5>
+<ul>
+<li>
+<p>问题：软件规模庞大，内部耦合严重，开发效率低，维护和扩展困难，不能适应对性能、可用性、可扩展性的要求</p>
+</li>
+<li>
+<p>方案：软件架构设计</p>
+</li>
+<li>
+<p>软件架构设计：将系统划分为若干组件</p>
+</li>
+</ul>
+<h4 id="架构设计目的"><strong>架构设计目的</strong></h4>
+<p>架构设计的主要目的是：解决我们对软件系统的要求所带来的<strong>软件复杂度问题</strong>。</p>
+<h5 id="复杂度来源高性能"><strong>复杂度来源：高性能</strong></h5>
+<ul>
+<li>在大规模数据量、访问量的情况下，满足对系统响应时间、吞吐量、资源利用率的要求</li>
+</ul>
+<h5 id="复杂度来源高可用"><strong>复杂度来源：高可用</strong></h5>
+<ul>
+<li>在软件、硬件、外部环境出现问题的情况下，满足对系统无中断执行、历史数据持久化、无丢失的要求</li>
+</ul>
+<h5 id="复杂度来源可扩展"><strong>复杂度来源：可扩展</strong></h5>
+<ul>
+<li>在新需求不断出现的情况下，满足对系统易于扩展能力的要求</li>
+</ul>
+<h5 id="复杂度来源低成本安全规模"><strong>复杂度来源：低成本、安全、规模</strong></h5>
+<h4 id="总结"><strong>总结</strong></h4>
+<ul>
+<li>
+<p>随着计算机技术和人类社会的不断发展，我们对软件系统的要求不断升级，导致软件系统面对的复杂度不断升级，进而复杂度的解决方案不断升级。</p>
+</li>
+<li>
+<p>软件系统复杂度</p>
+<ul>
+<li>利用机器计算→读写机器代码困难→复杂逻辑开发困难、可移植性差→软件质量低下、难以维护→软件扩展性差→难以适应对高性能、高可用、可扩展的要求</li>
+</ul>
+</li>
+<li>
+<p>解决方案</p>
+<ul>
+<li>机器语言→汇编语言→高级语言→软件工程、面向过程设计→面向对象设计→软件架构</li>
+</ul>
+</li>
+<li>
+<p>演化方向</p>
+<ul>
+<li>向更高层、更高维度、更贴近问题而非机器的方向演进</li>
+</ul>
+</li>
+</ul>
+<h2 id="设计原则"><strong>设计原则</strong></h2>
+<h3 id="合适原则"><strong>合适原则</strong></h3>
+<ul>
+<li>
+<p>宣言：合适优于业界领先</p>
+</li>
+<li>
+<p>合适：适于企业当前开发人力、技术积淀、业务规模，能合理的将资源整合并发挥出最大功效，并且快速落地</p>
+</li>
+</ul>
+<h3 id="简单原则"><strong>简单原则</strong></h3>
+<ul>
+<li>
+<p>宣言：简单优于复杂</p>
+</li>
+<li>
+<p>简单：尽量避免结构的复杂性和逻辑的复杂性</p>
+</li>
+</ul>
+<h3 id="演化原则"><strong>演化原则</strong></h3>
+<ul>
+<li>
+<p>宣言：演化优于一步到位</p>
+</li>
+<li>
+<p>演化：架构满足当前需要，在实际应用中不断迭代，业务变化时进行扩展、重构、甚至重写</p>
+</li>
+</ul>
+<h2 id="设计流程"><strong>设计流程</strong></h2>
+<h3 id="识别复杂度"><strong>识别复杂度</strong></h3>
+<p>设计架构时，应首先将应用的主要复杂度来源列出来，然后根据业务、技术、团队等综合情况进行排序，优先解决当前面临的最主要的复杂度问题。</p>
+<ul>
+<li>
+<p>系统是否需要高性能</p>
+<ul>
+<li>对系统QPS/TPS进行预估，一般情况下的计算公式
+<ul>
+<li>峰值QPS=均值QPS*3</li>
+<li>目标QPS=峰值QPS*(2/4/8)，根据业务发展情况预估放大倍数，但一般不要超过10倍</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>系统是否需要高可用</p>
+<ul>
+<li>服务不可用对业务的影响</li>
+<li>数据丢失对业务的影响</li>
+</ul>
+</li>
+<li>
+<p>系统是否需要可扩展</p>
+</li>
+</ul>
+<h3 id="设计备选方案"><strong>设计备选方案</strong></h3>
+<p>针对高性能、高可用、可扩展等主要复杂度来源，存在若干经过时间和场景验证过的成熟技术，如高可用的主备方案、集群方案；高性能的负载均衡、多路复用方案，可扩展的分层、插件化方案。</p>
+<p>基于已有的技术或架构模式进行组合、调整，进而获取适合的架构设计方案，为了避免架构师认识局限、过度辩护、没有全面综合比较的问题，需要设计多个备选方案</p>
+<ul>
+<li>
+<p>备选方案数量为3-5个</p>
+</li>
+<li>
+<p>备选方案的差异要比较明显</p>
+</li>
+<li>
+<p>备选方案的技术不要局限于已经熟悉的技术</p>
+</li>
+<li>
+<p>备选方案主要关注<strong>技术选型</strong>，而非技术细节，不可过于详细</p>
+</li>
+</ul>
+<h3 id="评估和选择备选方案"><strong>评估和选择备选方案</strong></h3>
+<p>在评估备选方案时，应列出我们需要关注的<strong>质量属性点</strong>，然后分别从这些质量属性的维度去评估每个方案。</p>
+<p>质量属性点有：性能、可用性、硬件成本、项目投入、复杂度、安全性、可扩展性。</p>
+<p>在选择备选方案时，应按<strong>优先级</strong>选择，即综合当前的业务发展情况、团队人员规模和技能、业务发展预测等因素，将质量属性按照优先级排序，首先挑选满足第一优先级的，如果方案都满足，再选择满足第二优先级的方案&hellip;</p>
+<h3 id="详细方案设计"><strong>详细方案设计</strong></h3>
+<p>确定方案后，进行详细方案设计，将方案涉及的关键技术细节确定下来。</p>
+<ul>
+<li>
+<p>需要对技术选型的关键细节有较深入的理解</p>
+</li>
+<li>
+<p>通过分步骤、分阶段、分系统等方式，尽量降低方案复杂度</p>
+</li>
+</ul>
+<h2 id="架构模式"><strong>架构模式</strong></h2>
+<h3 id="高性能架构模式"><strong>高性能架构模式</strong></h3>
+<h4 id="高性能负载均衡"><strong>高性能负载均衡</strong></h4>
+<p>计算本身存在一个特点：同样的输入数据和逻辑，无论在哪台服务器执行，都应该得到相同的输出。由此，可以将系统分别部署到多台服务器，通过复杂均衡机制和策略，将用户请求分配到指定的服务器中进行处理，以此提升系统整体的计算能力。</p>
+<h5 id="分类"><strong>分类</strong></h5>
+<ul>
+<li>
+<p>DNS负载均衡</p>
+<ul>
+<li>原理
+<ul>
+<li>DNS服务器根据请求对同一域名返回不同区域/机房的IP地址，一般用来实现<strong>地理级别</strong>的负载均衡</li>
+</ul>
+</li>
+<li>优点
+<ul>
+<li>简单、成本低，无需自己开发或维护复杂均衡设备</li>
+<li>就近访问、提升访问速度，DNS服务器可根据请求来源IP，将域名解析为离用户最近的服务器地址</li>
+</ul>
+</li>
+<li>缺点
+<ul>
+<li>更新不及时，由于DNS各级缓存，修改IP后很多用户不能及时获取新IP</li>
+<li>扩展性差，DNS控制权在域名服务商中，无法进行定制化功能和扩展</li>
+<li>分配策略简单，无法感知后端服务器状态</li>
+</ul>
+</li>
+<li>改进
+<ul>
+<li>部分公司采用HTTP-DNS方式替代LocalDNS服务，通过HTTP直接获取服务器IP，避免域名劫持、降低解析时延、进行精准调度、实时生效、扩展性强</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>硬件负载均衡</p>
+<ul>
+<li>原理
+<ul>
+<li>通过单独的硬件设备实现负载均衡，典型设备如F5和A10，一般用于实现<strong>集群级别</strong>的负载均衡</li>
+</ul>
+</li>
+<li>优点
+<ul>
+<li>功能强大，支持各层级复杂均衡、支持全面负载均衡算法</li>
+<li>性能强大，可支持100万以上的并发</li>
+<li>稳定性高，商用硬件，经过大规模测试和使用</li>
+<li>支持安全防护，具备防火墙、防DDoS攻击等安全功能</li>
+</ul>
+</li>
+<li>缺点
+<ul>
+<li>价格昂贵</li>
+<li>扩展性差，很难进行扩展和定制</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>软件负载均衡</p>
+<ul>
+<li>原理
+<ul>
+<li>通过负载均衡软件实现负载均衡，典型软件如Nginx(7层负载均衡，支持HTTP、Email协议)、LVS(4层负载均衡，即传输层的负载均衡)，一般用于实现<strong>机器级别</strong>的负载均衡</li>
+<li>Nginx监听到请求后，根据负载均衡算法选择真实服务器RS，然后将请求转发给服务器，并接收返回值，然后将返回值发送给客户端</li>
+<li>LVS通过NAT或DR方式进行负载均衡
+<ul>
+<li>NAT：收到客户端TCP包后，修改目的IP地址为RS地址，收到RS返回的TCP包后，修改源IP地址为LVS的IP地址</li>
+<li>DR：首先，将LVS和RS都绑定到同一个VIP地址上；LVS收到客户端TCP包后，修改目的MAC地址为RS的MAC地址，然后RS处理后直接返回数据到客户端</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>优点
+<ul>
+<li>简单、便宜</li>
+<li>灵活，可根据业务进行定制化操作</li>
+</ul>
+</li>
+<li>缺点
+<ul>
+<li>性能较低，一个Nginx可支持5万并发</li>
+<li>不具备防火墙和防DDoS攻击等安全功能</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="算法"><strong>算法</strong></h5>
+<h6 id="轮询"><strong>轮询</strong></h6>
+<ul>
+<li>
+<p>收到请求后，按照顺序轮流分配到服务器上</p>
+</li>
+<li>
+<p>不关注服务器本身的状态，只关注是否在运行</p>
+</li>
+</ul>
+<h6 id="加权轮询"><strong>加权轮询</strong></h6>
+<ul>
+<li>收到请求后，根据服务器权重进行任务分配，一般是静态权重</li>
+</ul>
+<h6 id="负载最低优先"><strong>负载最低优先</strong></h6>
+<ul>
+<li>
+<p>收到请求后，分配给当前负载最低的服务器</p>
+</li>
+<li>
+<p>负载可用TCP连接数、HTTP请求数、CPU负载、IO负载来衡量</p>
+</li>
+</ul>
+<h6 id="性能最优优先"><strong>性能最优优先</strong></h6>
+<ul>
+<li>收到请求后，分配给处理速度最快的服务器</li>
+</ul>
+<h6 id="hash"><strong>Hash</strong></h6>
+<ul>
+<li>
+<p>根据请求中的某些关键信息进行Hash运算，将相同hash值的请求分配到同一台服务器中，以满足业务的需求</p>
+</li>
+<li>
+<p>如根据源IP地址Hash、根据ID Hash</p>
+</li>
+</ul>
+<h4 id="单服务器并发模型"><strong>单服务器并发模型</strong></h4>
+<p>单服务器高性能的关键之一是服务器采取的并发模型，即服务器如何管理连接、服务器如何处理请求，并最终取决于所采用的操作系统的进程模型(单进程、多进程、多线程)和IO模型(堵塞、非堵塞、同步、异步)</p>
+<h5 id="ppc"><strong>PPC</strong></h5>
+<ul>
+<li>
+<p>Process Per Connection，每次有新的连接就新建一个进程去专门处理这个连接的请求</p>
+</li>
+<li>
+<p>缺点</p>
+<ul>
+<li>fork代价高</li>
+<li>父子进程通信复杂</li>
+<li>支持的并发连接数量有限，CPU进程调度和切换代价高</li>
+</ul>
+</li>
+</ul>
+<h5 id="tpc"><strong>TPC</strong></h5>
+<ul>
+<li>
+<p>Thread Per Connection，每次有新的连接就新建一个线程去专门处理这个连接的请求</p>
+</li>
+<li>
+<p>缺点</p>
+<ul>
+<li>创建线程代价较创建进程低，但高并发时仍有性能问题，仍存在CPU线程调度和切换的代价问题</li>
+<li>线程间的互斥和共享可能导致死锁问题</li>
+<li>多线程之间可能会相互影响，某个线程出现异常时可能导致整个进行退出</li>
+</ul>
+</li>
+</ul>
+<h5 id="io多路复用"><strong>IO多路复用</strong></h5>
+<ul>
+<li>
+<p>通过一个进程同时监听多个文件描述符，当所有文件都未就绪时，进程进入堵塞状态，否则开始处理已就绪的文件</p>
+</li>
+<li>
+<p>即避免了多进程监听IO时产生的创建、销毁和调度开销，也避免了单进程通过非堵塞IO读写数据时产生的空转和轮询开销</p>
+</li>
+</ul>
+<h5 id="reactor"><strong>Reactor</strong></h5>
+<ul>
+<li>
+<p>基于IO多路复用实现高性能事件处理的模型，是事件驱动架构的一种模式</p>
+</li>
+<li>
+<p>核心模块</p>
+<ul>
+<li>Reactor：监听和分配事件</li>
+<li>资源池：进程池或者线程池，负责处理事件</li>
+</ul>
+</li>
+<li>
+<p>单Reactor-单进程/线程</p>
+<ul>
+<li>架构
+<ul>
+<li>Reactor通过select监控连接对象，收到事件后通过dispatch进行分发</li>
+<li>Acceptor处理连接建立事件，通过accept接受连接</li>
+<li>Handler处理其他事件，通过read→业务处理→send进行业务流程的处理</li>
+</ul>
+</li>
+<li>优点
+<ul>
+<li>简单、无需进程间通信、无需解决同步互斥竞争等问题</li>
+</ul>
+</li>
+<li>缺点
+<ul>
+<li>无法返回多核多cpu的性能</li>
+<li>在处理某个连接的业务时，无法处理其他连接，可能造成其他连接堵塞</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>单Reactor-多线程</p>
+<ul>
+<li>架构
+<ul>
+<li>Reactor通过select监控连接对象，收到事件后通过dispatch进行分发</li>
+<li>Acceptor处理连接建立事件</li>
+<li>Handler处理其他事件，通过read读取数据，然后通过Processor进行处理，并接收Processor的处理结果后通过send返回给client</li>
+<li>Processor在独立的子线程中完成真正的业务处理，并把处理结果返回给Handler</li>
+</ul>
+</li>
+<li>优点
+<ul>
+<li>充分利用多核多CPU的处理能力</li>
+</ul>
+</li>
+<li>缺点
+<ul>
+<li>多线程数据共享和访问比较复杂</li>
+<li>主线程中Reactor承担所有事件的监听和响应，易成为性能瓶颈</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>多Reactor-多进程/线程</p>
+<ul>
+<li>架构
+<ul>
+<li>父进程中mainReactor通过select监控连接对象</li>
+<li>父进程中Acceptor处理连接建立事件，并将建立的连接分配到子进程中</li>
+<li>子进程中subReactor通过select监控父进程分配的连接对象</li>
+<li>子进程中Handler处理其他事件，并进行业务处理和响应</li>
+</ul>
+</li>
+<li>优点
+<ul>
+<li>父子进程分工明确，父进程只负责监听和处理连接建立事件，子进程负责监听和处理其他事件</li>
+<li>父子进程交互简单，父进程只需要把新连接传给子进程</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="proactor"><strong>Proactor</strong></h5>
+<ul>
+<li>
+<p>基于异步IO实现的事件驱动模型。</p>
+</li>
+<li>
+<p>架构</p>
+<ul>
+<li>Proactor Initiator负责创建Proactor和Handler，并将其注册到内核</li>
+<li>Async Operation Processor负责处理注册请求、完成IO操作，并通知Proactor</li>
+<li>Proactor根据不同的事件类型回调不同的Handler进行业务处理</li>
+</ul>
+</li>
+<li>
+<p>优势</p>
+<ul>
+<li>Proactor通过异步IO能够充分利用DMA特性，同时省去同步调用select、read等开销</li>
+</ul>
+</li>
+<li>
+<p>缺点</p>
+<ul>
+<li>Linux下的AIO并不完善</li>
+</ul>
+</li>
+</ul>
+<h4 id="高性能缓存架构"><strong>高性能缓存架构</strong></h4>
+<p>为了弥补数据库/存储系统在<strong>复杂运算重复计算</strong>和<strong>读多写少</strong>场景下的性能瓶颈，可通过缓存将可能重复使用的数据放在内存中，一次生成，多次使用，避免每次都访问存储系统。</p>
+<p>高性能缓存架构需要面临的一些问题</p>
+<ul>
+<li>
+<p>缓存穿透</p>
+<ul>
+<li>概念：业务系统在缓存中没有查询到数据，导致需要到数据库中进行查找。</li>
+<li>原因
+<ul>
+<li>存储数据不存在
+<ul>
+<li>解决方案
+<ul>
+<li>业务层对不合法请求进行过滤</li>
+<li>推荐：可直接设置一个默认值存到缓存中</li>
+<li>尽量不：通过布隆过滤器对不可能的数据进行过滤</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>缓存数据生成耗费大量时间或资源
+<ul>
+<li>爬虫系统访问大量缓存过期的数据，而数据生成需要耗费大量时间或资源</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>缓存击穿</p>
+<ul>
+<li>概念：缓存失效后对同一热点key的大量请求同时访问数据库进行更新缓存，造成存储系统崩溃</li>
+<li>解决方案
+<ul>
+<li>更新锁
+<ul>
+<li>对缓存更新操作进行加锁保护，保证缓存失效时只有一个线程能够进行缓存更新</li>
+</ul>
+</li>
+<li>热点key可设置为永不过期</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>缓存雪崩</p>
+<ul>
+<li>概念：缓存中大量数据在同一时间点或较近时间段内全部失效，导致请求全部访问数据库</li>
+<li>解决方案
+<ul>
+<li>缓存的过期时间随机波动</li>
+<li>缓存有效期设置为永久，后台线程定时更新缓存
+<ul>
+<li>业务线程发现缓存不存在时可通过消息等方式通知后台线程进行更新</li>
+</ul>
+</li>
+<li>提高缓存系统容灾能力</li>
+<li>提高数据库容灾能力</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>缓存热Key</p>
+<ul>
+<li>概念：特别热点的数据所在的服务器需要接受处理大量的访问请求，导致缓存服务器宕机，进而流量打到DB导致存储系统崩溃</li>
+<li>解决方案
+<ul>
+<li>二级缓存，将热key数据缓存到服务器本地，优先从本地缓存获取</li>
+<li>备份热Key，将热key数据复制存储到多台缓存服务器，访问时通过key+编号的方式访问</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>缓存更新策略</p>
+<ul>
+<li>Cache Aside
+<ul>
+<li>查询：业务先从cache中获取数据，有数据则返回，否则业务方从数据库中同步取数据并更新到缓存中</li>
+<li>更新：先将数据更新到数据库中，成功后让缓存失效</li>
+<li>Cache Aside也不能完全避免数据库和缓存的不一致性，但相比其他方式：先更新缓存再更新数据库、先删除缓存再更新数据库、先更新数据库再更新缓存，不一致性的概率更小</li>
+<li>可通过设置较短缓存有效期彻底消除不一致性问题，或通过分布式锁控制读取和更新的有序性。</li>
+</ul>
+</li>
+<li>Read/Write Through
+<ul>
+<li>查询：业务方直接到cache查询数据，不存在时cache组件从数据库中同步获取数据并更新到缓存中，此过程对业务方透明</li>
+<li>更新：先查询要写入的数据在缓存中是否存在
+<ul>
+<li>如存在，则更新缓存中的数据，并由缓存组件同步更新到数据库中</li>
+<li>如不存在
+<ul>
+<li>Write Allocate：写入缓存，再由缓存组件同步更新到数据库中</li>
+<li>No-Write Allocate：不写入缓存，直接更新到数据库</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Write Behind
+<ul>
+<li>更新：只更新到缓存，缓存采取定期或其他策略写入数据库</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="高性能nosql"><strong>高性能NoSQL</strong></h4>
+<p>为了弥补关系型数据库的以下缺点：</p>
+<ul>
+<li>
+<p>存储行记录和基本类型，无法存储数据结构</p>
+</li>
+<li>
+<p>表结构schema强约束，难以扩展</p>
+</li>
+<li>
+<p>大数据计算场景下数据库IO很高</p>
+</li>
+<li>
+<p>全文搜索功能较弱，很难高效支持全字段索引和模糊搜索</p>
+</li>
+</ul>
+<p>业界提出了许多不同的NoSQL方案：</p>
+<ul>
+<li>
+<p>KV存储：解决关系型数据库无法存储数据结构的问题，如Redis</p>
+</li>
+<li>
+<p>文档数据库：解决关系型数据库强schema约束的问题，如MongoDB</p>
+</li>
+<li>
+<p>列式数据库：解决关系型数据库大数据计算场景下的IO问题，如HBASE</p>
+</li>
+<li>
+<p>全文搜索引擎：解决关系型数据库的全文搜索性能问题，如ElasticSearch</p>
+</li>
+</ul>
+<h5 id="kv存储"><strong>KV存储</strong></h5>
+<p>KV存储，即Key-Value存储，其中key是数据的标识，Value是具体的数据，KV存储的典型代表是Redis。</p>
+<p>Redis并不能支持完整的ACID事务，Redis提供的事务只能保证隔离性(一个Redis不会看到也不会影响到另一个Redis事务)，无法保证CAD</p>
+<h5 id="文档数据库"><strong>文档数据库</strong></h5>
+<p>文档数据库可以存储和读取任意结构的数据，no-schema存储，绝大部分文档数据库存储的数据格式是JSON。</p>
+<ul>
+<li>
+<p>新增字段简单</p>
+</li>
+<li>
+<p>历史数据不会出错</p>
+</li>
+<li>
+<p>很容易存储复杂和异构数据</p>
+</li>
+<li>
+<p>不支持事务和Join</p>
+</li>
+</ul>
+<h5 id="列式数据库"><strong>列式数据库</strong></h5>
+<p>列示数据库按列来存储数据</p>
+<ul>
+<li>
+<p>业务同时读取多个列时效率高</p>
+</li>
+<li>
+<p>能够一次性完成对多个列的写操作</p>
+</li>
+<li>
+<p>一般用于海量数据进行离线存储和统计分析</p>
+</li>
+</ul>
+<h5 id="全文搜索引擎"><strong>全文搜索引擎</strong></h5>
+<p>全文搜索引擎支持</p>
+<ul>
+<li>
+<p>全字段索引，任意组合</p>
+</li>
+<li>
+<p>模糊匹配，支持分词</p>
+</li>
+</ul>
+<h4 id="高性能数据库集群"><strong>高性能数据库集群</strong></h4>
+<p>关系型数据库以ACID特性+强大的SQL查询能力，目前仍然是各种业务系统中关键和核心的存储系统，在互联网时代，单台数据库服务器无法解决大数据高性能的要求，必须通过集群的方式分散压力，其中读写分离方式将访问压力分散到各个节点，但不分散存储压力、分库分表方式将访问压力和存储压力都分散到各个节点。</p>
+<h5 id="读写分离"><strong>读写分离</strong></h5>
+<p>读写分离试讲数据库的读写操作分散到不同的节点上</p>
+<ul>
+<li>
+<p>数据库服务器搭建主从集群，如一主一从、一主多从</p>
+</li>
+<li>
+<p>数据库主机负责读写操作，从机只负责读操作</p>
+</li>
+<li>
+<p>数据库主机通过复制机制将数据同步到从机，每台服务器都存储了所有的业务数据</p>
+</li>
+<li>
+<p>业务服务器将写操作发给数据库主机，将读操作发给数据库从机</p>
+</li>
+</ul>
+<p>读写分离面临的核心复杂度是</p>
+<ul>
+<li>
+<p>主从复制延迟</p>
+<ul>
+<li>主从复制延迟会导致一段时间内无法从从机读到主机写入的最新数据</li>
+<li>解决方案
+<ul>
+<li>写操作后的读操作指定发送到主机</li>
+<li>读从机失败后再读一次主机（安全问题+更新非新增无法重读问题）</li>
+<li>关键核心业务读写操作全部发向主机，非关键业务用读写分离</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>分配机制</p>
+<ul>
+<li>即读写分离的位置
+<ul>
+<li>程序代码封装
+<ul>
+<li>在业务端/客户端抽象一个数据访问层，在该访问层中获取主从地址，并且负责将请求发送到主机或从机</li>
+</ul>
+</li>
+<li>中间件代理
+<ul>
+<li>独立出中间件系统，业务端直接访问中间件系统，中间价系统负责读写分离及管理数据库连接</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h5 id="分库分表"><strong>分库分表</strong></h5>
+<ul>
+<li>
+<p>业务分库</p>
+<ul>
+<li>按照业务模块将数据分散到不同的数据库服务器
+<ul>
+<li>join问题</li>
+<li>事务问题</li>
+<li>成本问题</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>分表</p>
+<ul>
+<li>垂直分表
+<ul>
+<li>将表中某些不常用且占用大量空间的列拆分出去</li>
+<li>表操作的数量要增加</li>
+</ul>
+</li>
+<li>水平分表
+<ul>
+<li>路由
+<ul>
+<li>范围路由</li>
+<li>Hash路由</li>
+<li>配置路由</li>
+</ul>
+</li>
+<li>join</li>
+<li>count</li>
+<li>order by</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="高可用架构模式"><strong>高可用架构模式</strong></h3>
+<h4 id="cap定理"><strong>CAP定理</strong></h4>
+<h5 id="概念-1"><strong>概念</strong></h5>
+<p>在一个分布式系统(指互相连接并共享数据的节点的集合)中，当涉及读写操作时，只能保证一致性、可用性、分区容错性三者中的两个，另外一个必须被牺牲。</p>
+<p>Consistency，一致性</p>
+<ul>
+<li>
+<p>对某个指定的客户端来说，读操作保证能返回最新的写操作结果</p>
+</li>
+<li>
+<p>即分布式系统中的线性一致性(原子一致性)</p>
+</li>
+</ul>
+<p>Availability，可用性</p>
+<ul>
+<li>非故障的节点在合理的时间内返回合理的响应(非错误和超时响应)</li>
+</ul>
+<p>Partition Tolerance，分区容错性</p>
+<ul>
+<li>当出现网络分区后，系统能够继续履行职责</li>
+</ul>
+<h5 id="要点"><strong>要点</strong></h5>
+<p>CAP中P是无法避免的。</p>
+<p>CAP关注的粒度是数据，而不是整个系统。</p>
+<p>CAP是忽略网络延时的，也即CAP假设某个节点写入的数据可以在瞬间复制到其他节点，而在实际系统中，瞬时复制无法实现，因此对于要求严格一致性的应用来说，对任一数据都只能通过单点写入的方式写入数据，无法实现多点写入，当然不同的数据可以分布到不同的单点上。</p>
+<p>CAP实际上是一种理论分析：在一个完全理想的网络环境中，CAP三者无法兼而得之。在实际的分布式系统中，即使是CP、AP、CA也都是无法保证的。</p>
+<h5 id="base"><strong>BASE</strong></h5>
+<p>BASE是现实对CAP的折中</p>
+<ul>
+<li>
+<p>Basically Available</p>
+<ul>
+<li>基本可用性，分布式系统在出现故障时，允许损失部分可用性，保证核心可用</li>
+</ul>
+</li>
+<li>
+<p>Soft State</p>
+<ul>
+<li>软状态，允许系统存在中间状态</li>
+</ul>
+</li>
+<li>
+<p>Eventually Consistency</p>
+<ul>
+<li>最终一致性，经过一定时间后，系统各节点达到一致的状态</li>
+</ul>
+</li>
+</ul>
+<h5 id="acid"><strong>ACID</strong></h5>
+<p>ACID是数据库理论中为了保证数据完整性所提出的一组属性。</p>
+<ul>
+<li>
+<p>Atomicity</p>
+<ul>
+<li>原子性，即一个事务中的操作，要么全部完成，要么全部不完成，不会在中间某个环节结束</li>
+</ul>
+</li>
+<li>
+<p>Consistency</p>
+<ul>
+<li>一致性，即在事务结束后，数据的完整性约束没有被破坏，即事务保证写入的数据依然满足数据库的规则约束，如非负数、触发器、外键等约束规则</li>
+</ul>
+</li>
+<li>
+<p>Isolation</p>
+<ul>
+<li>隔离性，并发执行的不同事务间相互隔离，读写操作不会相互影响</li>
+</ul>
+</li>
+<li>
+<p>Durability</p>
+<ul>
+<li>持久性，事务一旦提交，对数据的修改就是永久的，即使系统故障也不会丢失</li>
+</ul>
+</li>
+</ul>
+<h4 id="高可用存储"><strong>高可用存储</strong></h4>
+<p>存储高可用方案的本质都是将数据复制到多个存储设备，通过数据冗余的方式来实现高可用，因此核心问题是：如何应对复制延迟/中断导致的数据不一致问题。</p>
+<h5 id="双机架构"><strong>双机架构</strong></h5>
+<p>常见的双机高可用存储架构包括：主备、主从、主备/主从切换、主主</p>
+<h5 id="集群和分区"><strong>集群和分区</strong></h5>
+<p>集群是多台机器组合在一起形成一个统一的系统。</p>
+<p>集群可分为数据集中集群，即一主多从、一主多备；数据分散集群，即数据分散到多个机器，形成多主多从、多主多备</p>
+<h4 id="高可用计算"><strong>高可用计算</strong></h4>
+<p>高可用计算通过增加更多服务器实现。</p>
+<h4 id="异地多活"><strong>异地多活</strong></h4>
+<p>异地多活用来应对整个机房出现故障、突发情况的问题，异地指地理位置上不同的地方、多活指不同地理位置上的系统都能够提供业务服务</p>
+<ul>
+<li>
+<p>同城异区</p>
+</li>
+<li>
+<p>跨城异地</p>
+</li>
+<li>
+<p>跨国异地</p>
+</li>
+</ul>
+<p>核心思想：优先保证核心业务和优先保证绝大部分用户</p>
+<h4 id="接口级故障"><strong>接口级故障</strong></h4>
+<p>系统未宕机，网络未中断，但业务接口由于系统压力过大、负载太高导致无法快速处理业务请求，出现业务访问缓慢、大量访问异常、访问超时等问题。</p>
+<ul>
+<li>
+<p>降级</p>
+<ul>
+<li>系统将某些业务或者接口的功能降低、只提供部分功能或者完全停掉功能。</li>
+</ul>
+</li>
+<li>
+<p>熔断</p>
+<ul>
+<li>系统调用依赖的外部系统接口时，直接返回错误或不再调用</li>
+</ul>
+</li>
+<li>
+<p>限流</p>
+<ul>
+<li>只允许系统能够承受的访问量，超出系统访问能力的请求丢弃</li>
+</ul>
+</li>
+<li>
+<p>排队</p>
+<ul>
+<li>限流的变种，让用户等待一段时间</li>
+</ul>
+</li>
+</ul>
+<h3 id="可扩展架构模式"><strong>可扩展架构模式</strong></h3>
+<h4 id="面向流程拆分"><strong>面向流程拆分</strong></h4>
+<p>将业务流程拆分为几个阶段，每个阶段作为一部分</p>
+<ul>
+<li>分层架构设计
+<ul>
+<li>保证各层的差异足够清晰，边界足够明显</li>
+<li>分层的本质在于 隔离关注点：每个层都只关注和处理本层的逻辑</li>
+<li>一旦分层确定，整个业务流程按照层依次处理，分层依赖限制为两两依赖</li>
+</ul>
+</li>
+</ul>
+<h4 id="面向服务拆分"><strong>面向服务拆分</strong></h4>
+<p>将系统提供的服务拆分，每个服务作为一部分</p>
+<ul>
+<li>
+<p>SOA</p>
+<ul>
+<li>Service Oriented Architecture，面向服务架构</li>
+<li>所有业务功能都是一项服务</li>
+<li>通过ESB(Enterprise Service Bus，企业服务总线)将不同的服务连接在一起</li>
+<li>松耦合，各个服务独立运行，向后兼容</li>
+</ul>
+</li>
+<li>
+<p>微服务架构</p>
+<ul>
+<li>系统按业务功能划分为一组微服务，每个微服务独立运行，微服务间通过HTTP等轻量级机制进行通信，微服务通过自动化系统进行部署、测试、监控、治理(服务注册、服务发现、服务路由、服务容错、服务安全)</li>
+<li>核心是：服务粒度小、轻量级通信、自动化部署运维</li>
+</ul>
+</li>
+</ul>
+<h4 id="面向功能拆分"><strong>面向功能拆分</strong></h4>
+<p>向系统提供的功能拆分，每个功能作为一部分</p>
+<ul>
+<li>
+<p>微内核架构</p>
+<ul>
+<li>面向功能进行拆分的可扩展架构，也称为插件化架构
+<ul>
+<li>核心系统：负责和具体业务功能无关的通用功能，例如模块加载、模块间通信</li>
+<li>插件模块：负责实现具体的业务逻辑</li>
+</ul>
+</li>
+<li>关键技术
+<ul>
+<li>插件管理：插件注册表机制</li>
+<li>插件连接：插件和核心系统的连接规范</li>
+<li>插件通信</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>规则引擎</p>
+<ul>
+<li>开发人员将业务功能分解为多个规则</li>
+<li>业务人员根据需要排列组合规则</li>
+<li>规则引擎执行规则</li>
+</ul>
+</li>
+</ul>
+      
+      
+    </div>
+
+    
+		<div class="post-cats-box">
+      
+      
+      <a class="tag-link" href="/categories/%E6%8A%80%E6%9C%AF">技术</a> 
+      
+		</div>
+		
+
+    
+    
+    <div class="post-tags-box">
+      
+      
+      <a class="tag-link" href="/tags/%E6%9E%B6%E6%9E%84">架构</a> 
+      
+    </div>
+    
+    
+
+  </article>
+</div>
+
+<div class="post-nav">
+  
+  <div class="prev-wrap col-md-6 col-xs-6">
+    <i class="fa fa-angle-double-left"></i>
+    <a href="https://brycerd.github.io/posts/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" class="prev-post">设计模式</a>
+  </div>
+  
+
+  
+  <div class="next-wrap col-md-6 col-xs-6">
+    <a href="https://brycerd.github.io/posts/git%E5%8E%9F%E7%90%86%E4%BD%BF%E7%94%A8%E4%B8%8E%E5%AE%9E%E8%B7%B5/" class="prev-post">Git：原理、使用与实践</a>
+    <i class="fa fa-angle-double-right"></i>
+  </div>
+  
+</div>
+
+
+    <div id="toc"></div>
+    </main>
+</div>
+
+
+  <div id="local-search">
+    <div class="search-dialog">
+        <div class="search-nav">
+            <span class="search-dialog-title">搜索</span>
+            <span id="loading-status"></span>
+            <button class="search-close-button">
+                <i class="iconfont icon-quxiao4"></i>
+            </button>
+        </div>
+        <div class="is-center" id="loading-database">
+            <i class="fas fa-spinner fa-pulse"></i>
+            <span>数据库载入中</span>
+        </div>
+        <div class="search-wrap">
+            <div id="local-search-input">
+                <div class="local-search-box">
+                    <input class="local-search-box--input" placeholder="请输入关键词" type="text">
+                </div>
+            </div>
+            <hr>
+            <div id="local-search-results">
+            </div>
+        </div>
+    </div>
+    <div id="search-mask"></div>
+</div>
+
+
+<div id="login">
+    <div class="login-box">
+        <p class="login-nav">
+            <span class="login-title">LOGIN</span>
+            <span id="loading-status"></span>
+            <button class="login-close-button">
+                <i class="iconfont icon-quxiao4"></i>
+            </button>
+        </p>
+		<div class="item">
+			<input type="text" id="user" required>
+			<label for="">USER</label>
+		</div>
+		<div class="item">
+			<input type="password" id="password" required>
+			<label for="">PASSWORD</label>
+		</div>
+		<button class="btn" id="login-submit">submit
+			<span></span>
+			<span></span>
+			<span></span>
+			<span></span>
+		</button>
+    </div>
+    <div id="login-mask">
+    </div>
+</div>
+<footer>
+  <div class="copyright">
+    <p id="copyright">Copyright © &nbsp;Bryce&nbsp;2022 - 2023&nbsp;
+    </p>
+    <p>
+      Powered by
+      <a href="https://gohugo.io/" target="_blank">Hugo</a>&nbsp;&
+      <a href="https://github.com/GenkunAbe/hugo-theme-hiruko" target="_blank">Hiruko</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+(function (u, c) {
+    var d = document, t = 'script', o = d.createElement(t),
+        s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (c) { o.addEventListener('load', function (e) { c(e); }); }
+    s.parentNode.insertBefore(o, s);
+})("/libs/pangu/pangu.min.js", function () {
+    pangu.spacingPage();
+});
+</script>
+<link rel="stylesheet" href="/libs/katex/css/katex.min.css">
+<script defer src="/libs/katex/js/katex.min.js"></script>
+<script defer src="/libs/katex/js/auto-render.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        renderMathInElement(document.body, {
+          
+          
+          delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false},
+            {left: '\\(', right: '\\)', display: false},
+            {left: '\\[', right: '\\]', display: true}
+          ],
+          macros: {
+            "\\ge": "\\geqslant",
+            "\\le": "\\leqslant",
+            "\\geq": "\\geqslant",
+            "\\leq": "\\leqslant"
+            },
+          
+          throwOnError : false
+        });
+    });
+</script>
+<script>
+    if (typeof show_toc == 'undefined') {
+        var show_toc = true;
+    }
+    if (show_toc) {
+        $("#toc").tocify({
+            selectors: "h2,h3,h4,h5", 
+            extendPage: false, 
+            highlightDefault: true, 
+            highlightOnScroll: true,
+            scrollTo: 80,
+        });
+    }
+</script>
+
+<script src="/js/util.js"></script>
+<script src="/js/crypto-js.min.js"></script>
+<script src="/js/mask.js"></script>
+
+<script src="/js/localsearch.js"></script></body>
+</html>
